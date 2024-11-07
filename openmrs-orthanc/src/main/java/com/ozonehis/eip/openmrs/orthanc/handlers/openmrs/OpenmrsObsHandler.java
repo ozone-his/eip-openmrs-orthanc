@@ -7,14 +7,27 @@
  */
 package com.ozonehis.eip.openmrs.orthanc.handlers.openmrs;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ozonehis.eip.openmrs.orthanc.Constants;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.camel.ProducerTemplate;
 import org.openmrs.Obs;
 
 public class OpenmrsObsHandler {
 
-    public List<Obs> getObsByPatientIDAndConceptID(String patientID, String conceptID) {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    public Obs[] getObsByPatientIDAndConceptID(ProducerTemplate producerTemplate, String patientID, String conceptID)
+            throws JsonProcessingException {
         // Concept ID 7cac8397-53cd-4f00-a6fe-028e8d743f8e
-        return new ArrayList<>();
+        Map<String, Object> headers = new HashMap<>();
+        headers.put(Constants.HEADER_OPENMRS_PATIENT_ID, patientID);
+        headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_ID, conceptID);
+        String response = producerTemplate.requestBodyAndHeaders(
+                "direct:orthanc-get-openmrs-obs-route", null, headers, String.class);
+
+        return objectMapper.readValue(response, Obs[].class);
     }
 }

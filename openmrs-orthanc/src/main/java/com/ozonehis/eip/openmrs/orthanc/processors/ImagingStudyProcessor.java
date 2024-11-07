@@ -7,23 +7,26 @@
  */
 package com.ozonehis.eip.openmrs.orthanc.processors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ozonehis.eip.openmrs.orthanc.handlers.openmrs.OpenmrsAttachmentHandler;
 import com.ozonehis.eip.openmrs.orthanc.handlers.openmrs.OpenmrsObsHandler;
 import com.ozonehis.eip.openmrs.orthanc.handlers.openmrs.OpenmrsPatientHandler;
 import com.ozonehis.eip.openmrs.orthanc.handlers.orthanc.OrthancImagingStudyHandler;
 import com.ozonehis.eip.openmrs.orthanc.handlers.orthanc.OrthancPatientHandler;
+import com.ozonehis.eip.openmrs.orthanc.models.imagingStudy.Study;
+import com.ozonehis.eip.openmrs.orthanc.models.patient.PatientMainDicomTags;
 import java.io.IOException;
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
-import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.ImagingStudy;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Resource;
 import org.openmrs.Obs;
 import org.openmrs.eip.EIPException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,16 +60,9 @@ public class ImagingStudyProcessor implements Processor {
     @Override
     public void process(Exchange exchange) {
         try (ProducerTemplate producerTemplate = exchange.getContext().createProducerTemplate()) {
-            Bundle bundle = exchange.getMessage().getBody(Bundle.class);
-            log.debug("ImagingStudyProcessor: bundle {}", bundle.getId());
-            List<Bundle.BundleEntryComponent> entries = bundle.getEntry();
-            for (Bundle.BundleEntryComponent entry : entries) {
-                ImagingStudy imagingStudy = null;
-                Resource resource = entry.getResource();
-                if (resource instanceof ImagingStudy) {
-                    imagingStudy = (ImagingStudy) resource;
-                }
-
+            Study[] studies = exchange.getMessage().getBody(Study[].class);
+            log.debug("ImagingStudyProcessor: {}", studies.length);
+            for (Study study : studies) {
                 /*
                 - Get subject id from imaging study
                 - Search OpenMRS for the Patient with identifier as Orthanc patient id (present in subject of Imaging study)
@@ -77,16 +73,25 @@ public class ImagingStudyProcessor implements Processor {
                 - Save attachment in OpenMRS with http://localhost/openmrs/ws/rest/v1/attachment and in filecaption add study id
                  */
 
-                String orthancPatientID =
-                        imagingStudy.getSubject().getReference().split("/")[1];
+                String commonPatientID = study.getPatientMainDicomTags().getOtherPatientIDs();
 
-                Patient openmrsPatient = openmrsPatientHandler.getPatientByIdentifier(orthancPatientID);
+                Patient openmrsPatient = openmrsPatientHandler.getPatientByIdentifier(commonPatientID);
                 if (openmrsPatient == null) {
-                    Patient orthancPatient = orthancPatientHandler.getPatientByID(orthancPatientID);
-                    openmrsPatient = openmrsPatientHandler.createPatient(orthancPatient);
-                    createAttachment(imagingStudy, openmrsPatient.getIdPart());
-                } else if (!doesObsExists(openmrsPatient.getIdPart(), imagingStudy.getIdPart())) {
-                    createAttachment(imagingStudy, openmrsPatient.getIdPart());
+                    PatientMainDicomTags patientMainDicomTags = study.getPatientMainDicomTags();
+                    openmrsPatient = openmrsPatientHandler.createPatient(
+                            patientMainDicomTags.getPatientName(),
+                            patientMainDicomTags.getPatientSex(),
+                            patientMainDicomTags.getPatientBirthDate(),
+                            patientMainDicomTags.getOtherPatientIDs());
+                }
+                if (!doesObsExists(
+                        producerTemplate,
+                        openmrsPatient.getIdPart(),
+                        study.getImagingStudyMainDicomTags().getStudyInstanceUID())) {
+                    createAttachment(
+                            orthancImagingStudyHandler.getImagingStudyByID(
+                                    study.getImagingStudyMainDicomTags().getStudyInstanceUID()),
+                            openmrsPatient.getIdPart());
                 }
             }
         } catch (Exception e) {
@@ -107,13 +112,22 @@ public class ImagingStudyProcessor implements Processor {
         return String.format(url, studyID, seriesID, instanceID);
     }
 
-    private boolean doesObsExists(String patientID, String imagingStudyID) {
-        List<Obs> obsList = openmrsObsHandler.getObsByPatientIDAndConceptID(patientID, ATTACHMENT_CONCEPT_ID);
+    private boolean doesObsExists(ProducerTemplate producerTemplate, String patientID, String imagingStudyID)
+            throws JsonProcessingException {
+        Obs[] obsList =
+                openmrsObsHandler.getObsByPatientIDAndConceptID(producerTemplate, patientID, ATTACHMENT_CONCEPT_ID);
         for (Obs obs : obsList) {
-            if (obs.getComment().equals(imagingStudyID)) {
+            if (obs.getComment().contains(imagingStudyID)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public Long convertDateToTimestamp(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
+        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
+
+        return Timestamp.valueOf(dateTime).getTime();
     }
 }

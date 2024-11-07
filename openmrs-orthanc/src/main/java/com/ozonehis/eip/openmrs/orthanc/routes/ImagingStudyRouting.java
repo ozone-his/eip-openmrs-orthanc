@@ -29,10 +29,10 @@ public class ImagingStudyRouting extends RouteBuilder {
     public void configure() {
         getContext().getTypeConverterRegistry().addTypeConverters(resourceConverter);
         // spotless:off
-        from("scheduler:taskUpdate?initialDelay=10000&delay=10000")// TODO: Make initialDelay and delay configurable
-            .routeId("poll-senaite")
+        from("scheduler:studyUpdate?initialDelay=10000&delay=10000")// TODO: Make initialDelay and delay configurable
+            .routeId("poll-orthanc")
             .log(LoggingLevel.INFO, "Polling ImagingStudy started...")
-            .to("direct:orthanc-get-imaging-study-route")
+            .to("direct:orthanc-get-studies-route")
             .process(imagingStudyProcessor)
             .log(LoggingLevel.INFO, "Polling ImagingStudy completed.")
                 .end();

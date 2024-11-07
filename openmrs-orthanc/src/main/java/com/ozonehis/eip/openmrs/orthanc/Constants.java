@@ -23,4 +23,10 @@ public class Constants {
     public static final String HEADER_ENABLE_PATIENT_SYNC = "enable.patient.sync";
 
     public static final String FHIR_RESOURCE_TYPE = "fhir.resource.type";
+
+    public static final String HEADER_STUDIES_SINCE = "orthanc.studies.since";
+
+    public static final String HEADER_OPENMRS_PATIENT_ID = "openmrs.patient.id";
+
+    public static final String HEADER_OPENMRS_OBS_CONCEPT_ID = "openmrs.obs.concept.id";
 }
