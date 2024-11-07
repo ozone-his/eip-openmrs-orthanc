@@ -65,12 +65,13 @@ public class ImagingStudyProcessor implements Processor {
             for (Study study : studies) {
                 /*
                 - Get subject id from imaging study
-                - Search OpenMRS for the Patient with identifier as Orthanc patient id (present in subject of Imaging study)
-                - Fetch all obs of patient
+                - Search OpenMRS for the Patient with identifier as Orthanc patient id (present in subject of Imaging study) // TODO: Find an identifier
+                - Fetch all obs of patient // TODO: Try Task
                 - Check obs comment if study id already exists then don't save another attachment
-                - Otherwise create patient in OpenMRS with identifier as orthanc patient id
+                - Otherwise create patient in OpenMRS with identifier as orthanc patient id  // Not to be done
                 - Fetch binary image from orthanc endpoint http://localhost:8889/dicom-web/studies/1.2.840.113745.101000.1008000.38179.6792.6324567/series/1.3.12.2.1107.5.99.1.24063.4.0.446793548272429/instances/1.3.12.2.1107.5.99.1.24063.4.0.447989428888616/rendered
-                - Save attachment in OpenMRS with http://localhost/openmrs/ws/rest/v1/attachment and in filecaption add study id
+                - Save attachment in OpenMRS with http://localhost/openmrs/ws/rest/v1/attachment and in filecaption add study url
+                 Remove host name in comment
                  */
 
                 String commonPatientID = study.getPatientMainDicomTags().getOtherPatientIDs();
