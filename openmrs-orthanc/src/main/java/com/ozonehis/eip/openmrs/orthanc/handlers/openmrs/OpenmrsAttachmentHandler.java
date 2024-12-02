@@ -15,7 +15,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OpenmrsAttachmentHandler {
 
     private static final String ATTACHMENT_FHIR_ENDPOINT = "http://localhost/openmrs/ws/rest/v1/attachment";

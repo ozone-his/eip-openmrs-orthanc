@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.camel.ProducerTemplate;
 import org.openmrs.Obs;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OpenmrsObsHandler {
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public Obs[] getObsByPatientIDAndConceptID(ProducerTemplate producerTemplate, String patientID, String conceptID)
             throws JsonProcessingException {
@@ -28,6 +28,6 @@ public class OpenmrsObsHandler {
         String response = producerTemplate.requestBodyAndHeaders(
                 "direct:orthanc-get-openmrs-obs-route", null, headers, String.class);
 
-        return objectMapper.readValue(response, Obs[].class);
+        return new ObjectMapper().readValue(response, Obs[].class);
     }
 }

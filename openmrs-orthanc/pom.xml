@@ -47,7 +47,6 @@
       <groupId>org.openmrs.api</groupId>
       <artifactId>openmrs-api</artifactId>
       <version>2.6.9</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
@@ -72,7 +71,8 @@
               <artifactSet>
                 <includes>
                   <include>org.openmrs.eip:*</include>
-                  <include>org.apache.xmlrpc:xmlrpc-client</include>
+                  <include>com.squareup.okhttp3:*</include>
+                  <include>org.openmrs.api:openmrs-api</include>
                   <include>org.liquibase:*</include>
                   <include>com.ozonehis:*</include>
                   <include>org.apache.camel:camel-fhir</include>

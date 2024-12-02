@@ -10,7 +10,9 @@ package com.ozonehis.eip.openmrs.orthanc.handlers.orthanc;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import org.hl7.fhir.r4.model.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrthancPatientHandler {
 
     @Autowired

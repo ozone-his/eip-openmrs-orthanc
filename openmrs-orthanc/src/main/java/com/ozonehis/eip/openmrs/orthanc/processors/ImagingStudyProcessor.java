@@ -49,13 +49,13 @@ public class ImagingStudyProcessor implements Processor {
     private OrthancPatientHandler orthancPatientHandler;
 
     @Autowired
-    private OpenmrsObsHandler openmrsObsHandler;
-
-    @Autowired
     private OpenmrsAttachmentHandler openmrsAttachmentHandler;
 
     @Autowired
     private OrthancImagingStudyHandler orthancImagingStudyHandler;
+
+    @Autowired
+    private OpenmrsObsHandler openmrsObsHandler;
 
     @Override
     public void process(Exchange exchange) {

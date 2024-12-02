@@ -23,7 +23,9 @@ import okhttp3.Response;
 import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.r4.model.ImagingStudy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrthancImagingStudyHandler {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
