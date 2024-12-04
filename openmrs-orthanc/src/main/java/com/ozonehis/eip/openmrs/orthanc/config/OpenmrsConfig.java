@@ -28,7 +28,7 @@ public class OpenmrsConfig {
     @Value("${openmrs.password:Admin123}")
     private String openmrsPassword;
 
-    @Value("${openmrs.baseUrl:http://localhost/openmrs/ws}")
+    @Value("${openmrs.baseUrl:http://openmrs:8080/openmrs/ws}")
     private String openmrsBaseUrl;
 
     public String authHeader() {

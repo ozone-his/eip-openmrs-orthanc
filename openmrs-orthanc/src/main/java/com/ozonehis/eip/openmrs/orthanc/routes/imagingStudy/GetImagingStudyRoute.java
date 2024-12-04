@@ -22,18 +22,19 @@ public class GetImagingStudyRoute extends RouteBuilder {
     @Autowired
     private OrthancConfig orthancConfig;
 
-    private static final String GET_IMAGING_STUDY_ENDPOINT = "/fhir/ImagingStudy";
+    private static final String GET_IMAGING_STUDY_ENDPOINT = "/fhir/ImagingStudy/";
 
     @Override
     public void configure() {
         // spotless:off
         from("direct:orthanc-get-imaging-study-route")
-            .log(LoggingLevel.INFO, "Fetching ImagingStudy from Orthanc...")
-            .routeId("orthanc-get-imaging-study-route")
-            .setHeader(Constants.CAMEL_HTTP_METHOD, constant(Constants.GET))
-            .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
-            .setHeader(Constants.AUTHORIZATION, constant(orthancConfig.authHeader()))
-            .toD(orthancConfig.getOrthancBaseUrl() + GET_IMAGING_STUDY_ENDPOINT)
+                .log(LoggingLevel.INFO, "Fetching ImagingStudy from Orthanc...")
+                .routeId("orthanc-get-imaging-study-route")
+                .setHeader(Constants.CAMEL_HTTP_METHOD, constant(Constants.GET))
+                .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
+                .setHeader(Constants.AUTHORIZATION, constant(orthancConfig.authHeader()))
+                .toD(orthancConfig.getOrthancBaseUrl() + GET_IMAGING_STUDY_ENDPOINT + "${header." + Constants.HEADER_IMAGING_STUDY_ID
+                        + "}")
                 .end();
         // spotless:on
     }

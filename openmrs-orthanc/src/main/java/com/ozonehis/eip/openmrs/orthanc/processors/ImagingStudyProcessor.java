@@ -8,6 +8,7 @@
 package com.ozonehis.eip.openmrs.orthanc.processors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ozonehis.eip.openmrs.orthanc.handlers.openmrs.OpenmrsAttachmentHandler;
 import com.ozonehis.eip.openmrs.orthanc.handlers.openmrs.OpenmrsObsHandler;
 import com.ozonehis.eip.openmrs.orthanc.handlers.openmrs.OpenmrsPatientHandler;
@@ -25,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
-import org.hl7.fhir.r4.model.ImagingStudy;
 import org.hl7.fhir.r4.model.Patient;
 import org.openmrs.Obs;
 import org.openmrs.eip.EIPException;
@@ -40,7 +40,7 @@ public class ImagingStudyProcessor implements Processor {
 
     private static final String ATTACHMENT_CONCEPT_ID = "7cac8397-53cd-4f00-a6fe-028e8d743f8e";
 
-    private static final String url = "http://localhost:8889/dicom-web/studies/%s/series/%s/instances/%s/rendered";
+    private static final String url = "http://orthanc:8042/instances/%s/rendered";
 
     @Autowired
     private OpenmrsPatientHandler openmrsPatientHandler;
@@ -60,8 +60,11 @@ public class ImagingStudyProcessor implements Processor {
     @Override
     public void process(Exchange exchange) {
         try (ProducerTemplate producerTemplate = exchange.getContext().createProducerTemplate()) {
-            Study[] studies = exchange.getMessage().getBody(Study[].class);
-            log.debug("ImagingStudyProcessor: {}", studies.length);
+            String body = exchange.getMessage().getBody(String.class);
+            ObjectMapper mapper = new ObjectMapper();
+            Study[] studies = mapper.readValue(body, Study[].class);
+
+            log.info("ImagingStudyProcessor: {} and studies {}", studies.length, studies);
             for (Study study : studies) {
                 /*
                 - Get subject id from imaging study
@@ -75,9 +78,10 @@ public class ImagingStudyProcessor implements Processor {
                  */
 
                 String commonPatientID = study.getPatientMainDicomTags().getOtherPatientIDs();
-
-                Patient openmrsPatient = openmrsPatientHandler.getPatientByIdentifier(commonPatientID);
-                if (openmrsPatient == null) {
+                Patient openmrsPatient;
+                if (commonPatientID != null) {
+                    openmrsPatient = openmrsPatientHandler.getPatientByIdentifier(commonPatientID);
+                } else {
                     PatientMainDicomTags patientMainDicomTags = study.getPatientMainDicomTags();
                     openmrsPatient = openmrsPatientHandler.createPatient(
                             patientMainDicomTags.getPatientName(),
@@ -85,32 +89,41 @@ public class ImagingStudyProcessor implements Processor {
                             patientMainDicomTags.getPatientBirthDate(),
                             patientMainDicomTags.getOtherPatientIDs());
                 }
-                if (!doesObsExists(
-                        producerTemplate,
+                createAttachment(
+                        study,
                         openmrsPatient.getIdPart(),
-                        study.getImagingStudyMainDicomTags().getStudyInstanceUID())) {
-                    createAttachment(
-                            orthancImagingStudyHandler.getImagingStudyByID(
-                                    study.getImagingStudyMainDicomTags().getStudyInstanceUID()),
-                            openmrsPatient.getIdPart());
-                }
+                        orthancImagingStudyHandler
+                                .getSeriesByID(
+                                        producerTemplate, study.getSeries().get(0))
+                                .getInstances()
+                                .get(0));
+                //                if (!doesObsExists(
+                //                        producerTemplate,
+                //                        openmrsPatient.getIdPart(),
+                //                        study.getImagingStudyMainDicomTags().getStudyInstanceUID())) {
+                //                    createAttachment(
+                //                            orthancImagingStudyHandler.getImagingStudyByID(
+                //                                    producerTemplate,
+                //                                    study.getImagingStudyMainDicomTags().getStudyInstanceUID()),
+                //                            openmrsPatient.getIdPart());
+                //                }
             }
         } catch (Exception e) {
             throw new EIPException(String.format("Error processing ImagingStudy %s", e.getMessage()));
         }
     }
 
-    private void createAttachment(ImagingStudy imagingStudy, String patientID) throws IOException {
-        String studyImageUrl = buildStudyImageUrl(
-                imagingStudy.getIdPart(),
-                imagingStudy.getSeries().get(0).getUid(),
-                imagingStudy.getSeries().get(0).getInstance().get(0).getUid());
+    private void createAttachment(Study study, String patientID, String instanceID) throws IOException {
+        String studyImageUrl = buildStudyImageUrl(instanceID);
         byte[] orthancStudyBinaryData = orthancImagingStudyHandler.fetchStudyBinaryData(studyImageUrl);
-        openmrsAttachmentHandler.saveAttachment(orthancStudyBinaryData, patientID, imagingStudy.getIdPart());
+        openmrsAttachmentHandler.saveAttachment(
+                orthancStudyBinaryData,
+                patientID,
+                study.getImagingStudyMainDicomTags().getStudyInstanceUID());
     }
 
-    private String buildStudyImageUrl(String studyID, String seriesID, String instanceID) {
-        return String.format(url, studyID, seriesID, instanceID);
+    private String buildStudyImageUrl(String instanceID) {
+        return String.format(url, instanceID);
     }
 
     private boolean doesObsExists(ProducerTemplate producerTemplate, String patientID, String imagingStudyID)

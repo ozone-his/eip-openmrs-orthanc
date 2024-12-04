@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ozonehis.eip.openmrs.orthanc.Constants;
 import com.ozonehis.eip.openmrs.orthanc.models.imagingStudy.Study;
+import com.ozonehis.eip.openmrs.orthanc.models.series.Series;
+import groovy.util.logging.Slf4j;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
@@ -21,10 +23,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.camel.ProducerTemplate;
-import org.hl7.fhir.r4.model.ImagingStudy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@lombok.extern.slf4j.Slf4j
+@Slf4j
 @Component
 public class OrthancImagingStudyHandler {
 
@@ -60,9 +63,13 @@ public class OrthancImagingStudyHandler {
         return objectMapper.readValue(response, Study[].class);
     }
 
-    public ImagingStudy getImagingStudyByID(String id) {
-        ImagingStudy imagingStudy =
-                orthancFhirClient.read().resource(ImagingStudy.class).withId(id).execute();
-        return imagingStudy;
+    public Series getSeriesByID(ProducerTemplate producerTemplate, String seriesID) throws JsonProcessingException {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put(Constants.HEADER_SERIES_ID, seriesID);
+        String response =
+                producerTemplate.requestBodyAndHeaders("direct:orthanc-get-series-route", null, headers, String.class);
+        Series series = new ObjectMapper().readValue(response, Series.class);
+        log.info("Fetch series {}", series);
+        return series;
     }
 }

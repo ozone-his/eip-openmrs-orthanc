@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.ozonehis.eip.openmrs.orthanc.routes.imagingStudy;
+package com.ozonehis.eip.openmrs.orthanc.routes.series;
 
 import com.ozonehis.eip.openmrs.orthanc.Constants;
 import com.ozonehis.eip.openmrs.orthanc.config.OrthancConfig;
@@ -17,23 +17,23 @@ import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
 @Component
-public class GetStudiesRoute extends RouteBuilder {
+public class GetSeriesRoute extends RouteBuilder {
 
     @Autowired
     private OrthancConfig orthancConfig;
 
-    private static final String GET_IMAGING_STUDY_ENDPOINT = "/studies?limit=100&expand&since=0";
+    private static final String GET_SERIES_ENDPOINT = "/series/";
 
     @Override
     public void configure() {
         // spotless:off
-        from("direct:orthanc-get-studies-route")
-                .log(LoggingLevel.INFO, "Fetching Studies from Orthanc...")
-                .routeId("orthanc-get-studies-route")
+        from("direct:orthanc-get-series-route")
+                .log(LoggingLevel.INFO, "Fetching Series from Orthanc...")
+                .routeId("orthanc-get-series-route")
                 .setHeader(Constants.CAMEL_HTTP_METHOD, constant(Constants.GET))
                 .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
                 .setHeader(Constants.AUTHORIZATION, constant(orthancConfig.authHeader()))
-                .toD(orthancConfig.getOrthancBaseUrl() + GET_IMAGING_STUDY_ENDPOINT + "${header." + Constants.HEADER_STUDIES_SINCE
+                .toD(orthancConfig.getOrthancBaseUrl() + GET_SERIES_ENDPOINT + "${header." + Constants.HEADER_SERIES_ID
                         + "}")
                 .end();
         // spotless:on

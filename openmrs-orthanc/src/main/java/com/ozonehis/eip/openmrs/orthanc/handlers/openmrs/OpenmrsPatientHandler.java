@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
@@ -48,20 +50,35 @@ public class OpenmrsPatientHandler {
 
     public Patient createPatient(String name, String gender, String birthDate, String identifier) {
         Patient patient = new Patient();
-        patient.setName(Collections.singletonList(new HumanName().setFamily(name)));
-        if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("m")) {
-            patient.setGender(Enumerations.AdministrativeGender.MALE);
-        } else if (gender.equalsIgnoreCase("female") || gender.equalsIgnoreCase("f")) {
-            patient.setGender(Enumerations.AdministrativeGender.FEMALE);
+        patient.setName(Collections.singletonList(new HumanName().addGiven(name).setFamily(name)));
+        if (gender != null) {
+            if (gender.equalsIgnoreCase("male") || gender.equalsIgnoreCase("m")) {
+                patient.setGender(Enumerations.AdministrativeGender.MALE);
+            } else if (gender.equalsIgnoreCase("female") || gender.equalsIgnoreCase("f")) {
+                patient.setGender(Enumerations.AdministrativeGender.FEMALE);
+            }
+        } else {
+            patient.setGender(Enumerations.AdministrativeGender.MALE); // TODO: Fix this
         }
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-            patient.setBirthDate(dateFormat.parse(birthDate));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+        if (birthDate != null) {
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                patient.setBirthDate(dateFormat.parse(birthDate));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
         }
-        patient.setIdentifier(Collections.singletonList(new Identifier().setValue(identifier)));
-
+        if (identifier != null) {
+            patient.setIdentifier(Collections.singletonList(new Identifier()
+                    .setType(new CodeableConcept(new Coding().setCode("05a29f94-c0ed-11e2-94be-8c13b969e334"))
+                            .setText("OpenMRS ID"))
+                    .setValue(identifier)));
+        } else {
+            patient.setIdentifier(Collections.singletonList(new Identifier()
+                    .setType(new CodeableConcept(new Coding().setCode("05a29f94-c0ed-11e2-94be-8c13b969e334"))
+                            .setText("OpenMRS ID"))
+                    .setValue("100000Y"))); // TODO: Fix this
+        }
         MethodOutcome methodOutcome =
                 openmrsFhirClient.create().resource(patient).encodedJson().execute();
 
