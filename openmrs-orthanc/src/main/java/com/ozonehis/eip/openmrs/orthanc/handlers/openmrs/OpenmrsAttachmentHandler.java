@@ -36,7 +36,8 @@ public class OpenmrsAttachmentHandler {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("fileCaption", ORTHANC_VIEWER_BASE_URL + studyID)
                 .addFormDataPart("patient", patientID)
-                .addFormDataPart("file", studyID, RequestBody.create(binaryData, MediaType.parse("image/png")))
+                .addFormDataPart(
+                        "file", "binary-file.png", RequestBody.create(binaryData, MediaType.parse("image/png")))
                 .build();
 
         Request request = new Request.Builder()

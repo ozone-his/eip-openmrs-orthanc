@@ -69,7 +69,7 @@ public class Testing {
         MultipartBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("fileCaption", "test")
-                .addFormDataPart("patient", "7c34d5ec-bd78-4815-8a8a-1983e18c72de")
+                .addFormDataPart("patient", "8e21f54e-cbfa-4302-996e-e9eb34f942f7")
                 .addFormDataPart(
                         "file", "binary-file.png", RequestBody.create(binaryData, MediaType.parse("image/png")))
                 .build();
