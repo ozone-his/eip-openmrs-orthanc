@@ -5,10 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.ozonehis.eip.openmrs.orthanc.models.patient;
+package com.ozonehis.eip.openmrs.orthanc.models.obs;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,26 +18,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Patient {
+public class AttachmentObs {
 
-    @JsonProperty("ID")
-    public String id;
-
-    @JsonProperty("IsStable")
-    public boolean isStable;
-
-    @JsonProperty("Labels")
-    public String[] labels;
-
-    @JsonProperty("LastUpdate")
-    public String lastUpdate;
-
-    @JsonProperty("MainDicomTags")
-    public PatientMainDicomTags patientMainDicomTags;
-
-    @JsonProperty("Studies")
-    public String[] studies;
-
-    @JsonProperty("Type")
-    public String type;
+    @JsonProperty("results")
+    public List<Attachment> results;
 }

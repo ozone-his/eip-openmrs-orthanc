@@ -10,24 +10,28 @@ package com.ozonehis.eip.openmrs.orthanc.handlers.openmrs;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ozonehis.eip.openmrs.orthanc.Constants;
+import com.ozonehis.eip.openmrs.orthanc.models.obs.Attachment;
+import com.ozonehis.eip.openmrs.orthanc.models.obs.AttachmentObs;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
-import org.openmrs.Obs;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class OpenmrsObsHandler {
 
-    public Obs[] getObsByPatientIDAndConceptID(ProducerTemplate producerTemplate, String patientID, String conceptID)
-            throws JsonProcessingException {
+    public List<Attachment> getObsByPatientIDAndConceptID(
+            ProducerTemplate producerTemplate, String patientID, String conceptID) throws JsonProcessingException {
         // Concept ID 7cac8397-53cd-4f00-a6fe-028e8d743f8e
         Map<String, Object> headers = new HashMap<>();
         headers.put(Constants.HEADER_OPENMRS_PATIENT_ID, patientID);
         headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_ID, conceptID);
         String response = producerTemplate.requestBodyAndHeaders(
                 "direct:orthanc-get-openmrs-obs-route", null, headers, String.class);
-
-        return new ObjectMapper().readValue(response, Obs[].class);
+        AttachmentObs results = new ObjectMapper().readValue(response, AttachmentObs.class);
+        return results.getResults();
     }
 }

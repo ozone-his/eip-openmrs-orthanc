@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.ozonehis.eip.openmrs.orthanc.routes.obs;
+package com.ozonehis.eip.openmrs.orthanc.routes.identifier;
 
 import com.ozonehis.eip.openmrs.orthanc.Constants;
 import com.ozonehis.eip.openmrs.orthanc.config.OpenmrsConfig;
@@ -17,24 +17,25 @@ import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
 @Component
-public class GetObsByConceptIDRoute extends RouteBuilder {
+public class CreateIdentifierRoute extends RouteBuilder {
 
     @Autowired
     private OpenmrsConfig openmrsConfig;
 
-    private static final String GET_OBS_ENDPOINT =
-            "/rest/v1/obs?concept=7cac8397-53cd-4f00-a6fe-028e8d743f8e&v=full&patient="; // TODO: Remove hard coding
+    private static final String CREATE_IDENTIFIER_ENDPOINT =
+            "/rest/v1/idgen/identifiersource/8549f706-7e85-4c1d-9424-217d50a2988b/identifier"; // TODO: Remove hard
+    // coding
 
     @Override
     public void configure() {
         // spotless:off
-        from("direct:orthanc-get-openmrs-obs-route")
-                .log(LoggingLevel.INFO, "Fetching AttachmentObs from OpenMRS...")
-                .routeId("orthanc-get-openmrs-obs-route")
-                .setHeader(Constants.CAMEL_HTTP_METHOD, constant(Constants.GET))
+        from("direct:openmrs-create-identifier-route")
+                .log(LoggingLevel.INFO, "Creating OpenmrsIdentifier in OpenMRS...")
+                .routeId("openmrs-create-identifier-route")
+                .setHeader(Constants.CAMEL_HTTP_METHOD, constant(Constants.POST))
                 .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
                 .setHeader(Constants.AUTHORIZATION, constant(openmrsConfig.authHeader()))
-                .toD(openmrsConfig.getOpenmrsBaseUrl() + GET_OBS_ENDPOINT + "${header." + Constants.HEADER_OPENMRS_PATIENT_ID + "}")
+                .toD(openmrsConfig.getOpenmrsBaseUrl() + CREATE_IDENTIFIER_ENDPOINT)
                 .end();
         // spotless:on
     }

@@ -7,34 +7,28 @@
  */
 package com.ozonehis.eip.openmrs.orthanc.handlers.orthanc;
 
-import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ozonehis.eip.openmrs.orthanc.Constants;
 import com.ozonehis.eip.openmrs.orthanc.models.imagingStudy.Study;
 import com.ozonehis.eip.openmrs.orthanc.models.series.Series;
-import groovy.util.logging.Slf4j;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.camel.ProducerTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@lombok.extern.slf4j.Slf4j
 @Slf4j
 @Component
 public class OrthancImagingStudyHandler {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    @Autowired
-    private IGenericClient orthancFhirClient;
 
     public byte[] fetchStudyBinaryData(String studyUrl) throws IOException {
         String authHeader = "Basic " + Base64.getEncoder().encodeToString("orthanc:orthanc".getBytes());
@@ -46,7 +40,7 @@ public class OrthancImagingStudyHandler {
         OkHttpClient client = new OkHttpClient();
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                System.err.println("Failed to fetch binary data: " + response.code());
+                log.error("Failed to fetch binary data: {}", response.code());
                 return null;
             }
             return Objects.requireNonNull(response.body()).bytes();
@@ -69,7 +63,7 @@ public class OrthancImagingStudyHandler {
         String response =
                 producerTemplate.requestBodyAndHeaders("direct:orthanc-get-series-route", null, headers, String.class);
         Series series = new ObjectMapper().readValue(response, Series.class);
-        log.info("Fetch series {}", series);
+        log.debug("Fetch series {}", series);
         return series;
     }
 }

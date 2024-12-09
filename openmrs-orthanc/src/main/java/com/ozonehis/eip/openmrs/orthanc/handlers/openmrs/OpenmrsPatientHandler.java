@@ -9,10 +9,16 @@ package com.ozonehis.eip.openmrs.orthanc.handlers.openmrs;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ozonehis.eip.openmrs.orthanc.models.identifier.OpenmrsIdentifier;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -30,15 +36,15 @@ public class OpenmrsPatientHandler {
     @Autowired
     private IGenericClient openmrsFhirClient;
 
-    public Patient getPatientByIdentifier(String identifier) {
+    public Patient getPatientByName(String name) {
         Bundle bundle = openmrsFhirClient
                 .search()
                 .forResource(Patient.class)
-                .where(Patient.IDENTIFIER.exactly().code(identifier))
+                .where(Patient.NAME.contains().value(name))
                 .returnBundle(Bundle.class)
                 .execute();
 
-        log.debug("OpenmrsPatientHandler: Patient getPatientByIdentifier {}", bundle.getId());
+        log.debug("OpenmrsPatientHandler: Patient getPatientByName {}", bundle.getId());
 
         return bundle.getEntry().stream()
                 .map(Bundle.BundleEntryComponent::getResource)
@@ -56,11 +62,13 @@ public class OpenmrsPatientHandler {
                 patient.setGender(Enumerations.AdministrativeGender.MALE);
             } else if (gender.equalsIgnoreCase("female") || gender.equalsIgnoreCase("f")) {
                 patient.setGender(Enumerations.AdministrativeGender.FEMALE);
+            } else {
+                patient.setGender(Enumerations.AdministrativeGender.MALE); // TODO: Fix this
             }
         } else {
             patient.setGender(Enumerations.AdministrativeGender.MALE); // TODO: Fix this
         }
-        if (birthDate != null) {
+        if (birthDate != null && !birthDate.isEmpty()) {
             try {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
                 patient.setBirthDate(dateFormat.parse(birthDate));
@@ -68,21 +76,25 @@ public class OpenmrsPatientHandler {
                 throw new RuntimeException(e);
             }
         }
-        if (identifier != null) {
-            patient.setIdentifier(Collections.singletonList(new Identifier()
-                    .setType(new CodeableConcept(new Coding().setCode("05a29f94-c0ed-11e2-94be-8c13b969e334"))
-                            .setText("OpenMRS ID"))
-                    .setValue(identifier)));
-        } else {
-            patient.setIdentifier(Collections.singletonList(new Identifier()
-                    .setType(new CodeableConcept(new Coding().setCode("05a29f94-c0ed-11e2-94be-8c13b969e334"))
-                            .setText("OpenMRS ID"))
-                    .setValue("100000Y"))); // TODO: Fix this
-        }
+
+        List<Identifier> identifierList = new ArrayList<>();
+        identifierList.add(new Identifier()
+                .setType(new CodeableConcept(new Coding().setCode("05a29f94-c0ed-11e2-94be-8c13b969e334"))
+                        .setText("OpenMRS ID"))
+                .setValue(identifier));
+        patient.setIdentifier(identifierList);
+
         MethodOutcome methodOutcome =
                 openmrsFhirClient.create().resource(patient).encodedJson().execute();
 
         log.debug("OpenmrsPatientHandler: Patient created {}", methodOutcome.getCreated());
         return (Patient) methodOutcome.getResource();
+    }
+
+    public OpenmrsIdentifier createPatientIdentifier(ProducerTemplate producerTemplate) throws JsonProcessingException {
+        String response = producerTemplate.requestBodyAndHeaders(
+                "direct:openmrs-create-identifier-route", "{}", null, String.class);
+        OpenmrsIdentifier openmrsIdentifier = new ObjectMapper().readValue(response, OpenmrsIdentifier.class);
+        return openmrsIdentifier;
     }
 }
