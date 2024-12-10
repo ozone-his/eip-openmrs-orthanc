@@ -16,7 +16,6 @@ import com.ozonehis.eip.openmrs.orthanc.handlers.orthanc.OrthancImagingStudyHand
 import com.ozonehis.eip.openmrs.orthanc.handlers.orthanc.OrthancPatientHandler;
 import com.ozonehis.eip.openmrs.orthanc.models.imagingStudy.Study;
 import com.ozonehis.eip.openmrs.orthanc.models.obs.Attachment;
-import com.ozonehis.eip.openmrs.orthanc.models.patient.PatientMainDicomTags;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -67,29 +66,22 @@ public class ImagingStudyProcessor implements Processor {
 
             log.info("ImagingStudyProcessor: {} and studies {}", studies.length, studies);
             for (Study study : studies) {
-                /*
-                - Get subject id from imaging study
-                - Search OpenMRS for the Patient with identifier as Orthanc patient id (present in subject of Imaging study) // TODO: Find an identifier
-                - Fetch all obs of patient // TODO: Try Task
-                - Check obs comment if study id already exists then don't save another attachment
-                - Otherwise create patient in OpenMRS with identifier as orthanc patient id  // Not to be done
-                - Fetch binary image from orthanc endpoint http://localhost:8889/dicom-web/studies/1.2.840.113745.101000.1008000.38179.6792.6324567/series/1.3.12.2.1107.5.99.1.24063.4.0.446793548272429/instances/1.3.12.2.1107.5.99.1.24063.4.0.447989428888616/rendered
-                - Save attachment in OpenMRS with http://localhost/openmrs/ws/rest/v1/attachment and in filecaption add study url
-                 Remove host name in comment
-                 */
-
-                Patient openmrsPatient = openmrsPatientHandler.getPatientByName(
-                        study.getPatientMainDicomTags().getPatientName());
+                if (study.getPatientMainDicomTags().getOtherPatientIDs() == null) {
+                    continue;
+                }
+                Patient openmrsPatient = openmrsPatientHandler.getPatientByIdentifier(
+                        study.getPatientMainDicomTags().getOtherPatientIDs());
                 if (openmrsPatient == null) {
-                    String generatedIdentifier = openmrsPatientHandler
-                            .createPatientIdentifier(producerTemplate)
-                            .getIdentifier();
-                    PatientMainDicomTags patientMainDicomTags = study.getPatientMainDicomTags();
-                    openmrsPatient = openmrsPatientHandler.createPatient(
-                            patientMainDicomTags.getPatientName(),
-                            patientMainDicomTags.getPatientSex(),
-                            patientMainDicomTags.getPatientBirthDate(),
-                            generatedIdentifier);
+                    continue;
+                    //                    String generatedIdentifier = openmrsPatientHandler
+                    //                            .createPatientIdentifier(producerTemplate)
+                    //                            .getIdentifier();
+                    //                    PatientMainDicomTags patientMainDicomTags = study.getPatientMainDicomTags();
+                    //                    openmrsPatient = openmrsPatientHandler.createPatient(
+                    //                            patientMainDicomTags.getPatientName(),
+                    //                            patientMainDicomTags.getPatientSex(),
+                    //                            patientMainDicomTags.getPatientBirthDate(),
+                    //                            generatedIdentifier);
                 }
                 if (!doesObsExists(
                         producerTemplate,

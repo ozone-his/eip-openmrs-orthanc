@@ -36,15 +36,15 @@ public class OpenmrsPatientHandler {
     @Autowired
     private IGenericClient openmrsFhirClient;
 
-    public Patient getPatientByName(String name) {
+    public Patient getPatientByIdentifier(String identifier) {
         Bundle bundle = openmrsFhirClient
                 .search()
                 .forResource(Patient.class)
-                .where(Patient.NAME.contains().value(name))
+                .where(Patient.IDENTIFIER.exactly().identifier(identifier))
                 .returnBundle(Bundle.class)
                 .execute();
 
-        log.debug("OpenmrsPatientHandler: Patient getPatientByName {}", bundle.getId());
+        log.debug("OpenmrsPatientHandler: Patient getPatientByIdentifier {}", bundle.getId());
 
         return bundle.getEntry().stream()
                 .map(Bundle.BundleEntryComponent::getResource)
