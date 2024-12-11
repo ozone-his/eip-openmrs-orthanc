@@ -54,7 +54,9 @@ public class OpenmrsPatientHandler {
                 .orElse(null);
     }
 
-    public Patient createPatient(String name, String gender, String birthDate, String identifier) {
+    public Patient createPatient(
+            ProducerTemplate producerTemplate, String name, String gender, String birthDate, String orthancIdentifier)
+            throws JsonProcessingException {
         Patient patient = new Patient();
         patient.setName(Collections.singletonList(new HumanName().addGiven(name).setFamily(name)));
         if (gender != null) {
@@ -77,11 +79,18 @@ public class OpenmrsPatientHandler {
             }
         }
 
+        String openmrsIdentifier = createPatientIdentifier(producerTemplate).getIdentifier();
         List<Identifier> identifierList = new ArrayList<>();
         identifierList.add(new Identifier()
+                .setUse(Identifier.IdentifierUse.USUAL)
                 .setType(new CodeableConcept(new Coding().setCode("05a29f94-c0ed-11e2-94be-8c13b969e334"))
                         .setText("OpenMRS ID"))
-                .setValue(identifier));
+                .setValue(openmrsIdentifier));
+        identifierList.add(new Identifier()
+                .setUse(Identifier.IdentifierUse.OFFICIAL)
+                .setType(new CodeableConcept(new Coding().setCode("b4143563-16cd-4439-b288-f83d61670fc8"))
+                        .setText("ID Card"))
+                .setValue(orthancIdentifier));
         patient.setIdentifier(identifierList);
 
         MethodOutcome methodOutcome =
