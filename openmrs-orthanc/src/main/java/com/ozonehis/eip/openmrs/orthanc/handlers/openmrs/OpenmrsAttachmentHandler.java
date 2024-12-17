@@ -7,17 +7,16 @@
  */
 package com.ozonehis.eip.openmrs.orthanc.handlers.openmrs;
 
-import groovy.util.logging.Slf4j;
+import com.ozonehis.eip.openmrs.orthanc.config.OpenmrsConfig;
 import java.io.IOException;
-import java.util.Base64;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -28,10 +27,10 @@ public class OpenmrsAttachmentHandler {
 
     private static final String ORTHANC_VIEWER_BASE_URL = "http://localhost:8889/stone-webviewer/index.html?study=";
 
-    private static final Logger log = LoggerFactory.getLogger(OpenmrsAttachmentHandler.class);
+    @Autowired
+    private OpenmrsConfig openmrsConfig;
 
     public void saveAttachment(byte[] binaryData, String patientID, String studyID) throws IOException {
-        String authHeader = "Basic " + Base64.getEncoder().encodeToString("admin:Admin123".getBytes());
         MultipartBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("fileCaption", ORTHANC_VIEWER_BASE_URL + studyID)
@@ -43,7 +42,7 @@ public class OpenmrsAttachmentHandler {
         Request request = new Request.Builder()
                 .url(ATTACHMENT_FHIR_ENDPOINT)
                 .header("Accept", "application/json")
-                .header("Authorization", authHeader)
+                .header("Authorization", openmrsConfig.authHeader())
                 .post(requestBody)
                 .build();
 

@@ -13,10 +13,8 @@ import com.ozonehis.eip.openmrs.orthanc.handlers.openmrs.OpenmrsAttachmentHandle
 import com.ozonehis.eip.openmrs.orthanc.handlers.openmrs.OpenmrsObsHandler;
 import com.ozonehis.eip.openmrs.orthanc.handlers.openmrs.OpenmrsPatientHandler;
 import com.ozonehis.eip.openmrs.orthanc.handlers.orthanc.OrthancImagingStudyHandler;
-import com.ozonehis.eip.openmrs.orthanc.handlers.orthanc.OrthancPatientHandler;
 import com.ozonehis.eip.openmrs.orthanc.models.imagingStudy.Study;
 import com.ozonehis.eip.openmrs.orthanc.models.obs.Attachment;
-import com.ozonehis.eip.openmrs.orthanc.models.patient.PatientMainDicomTags;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -47,9 +45,6 @@ public class ImagingStudyProcessor implements Processor {
     private OpenmrsPatientHandler openmrsPatientHandler;
 
     @Autowired
-    private OrthancPatientHandler orthancPatientHandler;
-
-    @Autowired
     private OpenmrsAttachmentHandler openmrsAttachmentHandler;
 
     @Autowired
@@ -72,15 +67,6 @@ public class ImagingStudyProcessor implements Processor {
                 }
                 Patient openmrsPatient = openmrsPatientHandler.getPatientByIdentifier(
                         study.getPatientMainDicomTags().getOtherPatientIDs());
-                if (openmrsPatient == null) {
-                    PatientMainDicomTags patientMainDicomTags = study.getPatientMainDicomTags();
-                    openmrsPatient = openmrsPatientHandler.createPatient(
-                            producerTemplate,
-                            patientMainDicomTags.getPatientName(),
-                            patientMainDicomTags.getPatientSex(),
-                            patientMainDicomTags.getPatientBirthDate(),
-                            study.getPatientMainDicomTags().getOtherPatientIDs());
-                }
                 if (!doesObsExists(
                         producerTemplate,
                         openmrsPatient.getIdPart(),
