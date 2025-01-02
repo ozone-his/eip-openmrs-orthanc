@@ -22,13 +22,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Component
 public class OpenmrsConfig {
-    @Value("${openmrs.username:admin}")
+    @Value("${openmrs.username}")
     private String openmrsUsername;
 
-    @Value("${openmrs.password:Admin123}")
+    @Value("${openmrs.password}")
     private String openmrsPassword;
 
-    @Value("${openmrs.baseUrl:http://openmrs:8080/openmrs/ws}")
+    @Value("${openmrs.baseUrl}")
     private String openmrsBaseUrl;
 
     public String authHeader() {

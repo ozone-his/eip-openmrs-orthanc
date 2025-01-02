@@ -23,24 +23,26 @@ import org.springframework.stereotype.Component;
 @Component
 public class OpenmrsAttachmentHandler {
 
-    private static final String ATTACHMENT_FHIR_ENDPOINT = "http://openmrs:8080/openmrs/ws/rest/v1/attachment";
+    private static final String ATTACHMENT_FHIR_ENDPOINT = "%s/ws/rest/v1/attachment";
 
-    private static final String ORTHANC_VIEWER_BASE_URL = "http://localhost:8889/stone-webviewer/index.html?study=";
+    private static final String ORTHANC_VIEWER_BASE_URL =
+            "http://localhost:8889/stone-webviewer/index.html?study="; // TODO: Make the url configurable
 
     @Autowired
     private OpenmrsConfig openmrsConfig;
 
+    // TODO: Use Apache Camel Route instead of okhttp3 (Error: payload content too big)
     public void saveAttachment(byte[] binaryData, String patientID, String studyID) throws IOException {
         MultipartBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("fileCaption", ORTHANC_VIEWER_BASE_URL + studyID)
                 .addFormDataPart("patient", patientID)
                 .addFormDataPart(
-                        "file", "binary-file.png", RequestBody.create(binaryData, MediaType.parse("image/png")))
+                        "file", "radiology-image.png", RequestBody.create(binaryData, MediaType.parse("image/png")))
                 .build();
 
         Request request = new Request.Builder()
-                .url(ATTACHMENT_FHIR_ENDPOINT)
+                .url(String.format(ATTACHMENT_FHIR_ENDPOINT, openmrsConfig.getOpenmrsBaseUrl()))
                 .header("Accept", "application/json")
                 .header("Authorization", openmrsConfig.authHeader())
                 .post(requestBody)

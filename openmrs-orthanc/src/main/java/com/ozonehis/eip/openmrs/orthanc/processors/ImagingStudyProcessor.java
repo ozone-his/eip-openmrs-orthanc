@@ -16,9 +16,6 @@ import com.ozonehis.eip.openmrs.orthanc.handlers.orthanc.OrthancImagingStudyHand
 import com.ozonehis.eip.openmrs.orthanc.models.imagingStudy.Study;
 import com.ozonehis.eip.openmrs.orthanc.models.obs.Attachment;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +26,7 @@ import org.apache.camel.ProducerTemplate;
 import org.hl7.fhir.r4.model.Patient;
 import org.openmrs.eip.EIPException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -37,9 +35,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImagingStudyProcessor implements Processor {
 
-    private static final String ATTACHMENT_CONCEPT_ID = "7cac8397-53cd-4f00-a6fe-028e8d743f8e";
+    private static final String orthancRenderedImageEndpoint = "%s/instances/%s/rendered";
 
-    private static final String url = "http://orthanc:8042/instances/%s/rendered";
+    @Value("${orthanc.baseUrl}")
+    private String orthancBaseUrl;
+
+    @Value("${eip.attachment.concept}")
+    private String attachmentConceptId;
 
     @Autowired
     private OpenmrsPatientHandler openmrsPatientHandler;
@@ -98,25 +100,18 @@ public class ImagingStudyProcessor implements Processor {
     }
 
     private String buildStudyImageUrl(String instanceID) {
-        return String.format(url, instanceID);
+        return String.format(orthancRenderedImageEndpoint, orthancBaseUrl, instanceID);
     }
 
     private boolean doesObsExists(ProducerTemplate producerTemplate, String patientID, String imagingStudyID)
             throws JsonProcessingException {
         List<Attachment> attachmentList =
-                openmrsObsHandler.getObsByPatientIDAndConceptID(producerTemplate, patientID, ATTACHMENT_CONCEPT_ID);
+                openmrsObsHandler.getObsByPatientIDAndConceptID(producerTemplate, patientID, attachmentConceptId);
         for (Attachment attachment : attachmentList) {
             if (attachment.getComment().contains(imagingStudyID)) {
                 return true;
             }
         }
         return false;
-    }
-
-    public Long convertDateToTimestamp(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
-        LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-
-        return Timestamp.valueOf(dateTime).getTime();
     }
 }

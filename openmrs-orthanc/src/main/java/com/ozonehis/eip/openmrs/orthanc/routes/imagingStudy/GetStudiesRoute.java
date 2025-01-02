@@ -22,7 +22,8 @@ public class GetStudiesRoute extends RouteBuilder {
     @Autowired
     private OrthancConfig orthancConfig;
 
-    private static final String GET_IMAGING_STUDY_ENDPOINT = "/studies?limit=100&expand&since=0";
+    private static final String GET_IMAGING_STUDY_ENDPOINT =
+            "/studies?limit=100&expand&since=0"; // TODO: Should fetch with offset
 
     @Override
     public void configure() {

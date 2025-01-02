@@ -22,13 +22,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Component
 public class OrthancConfig {
-    @Value("${orthanc.username:orthanc}")
+    @Value("${orthanc.username}")
     private String orthancUsername;
 
-    @Value("${orthanc.password:orthanc}")
+    @Value("${orthanc.password}")
     private String orthancPassword;
 
-    @Value("${orthanc.baseUrl:http://localhost:8889}")
+    @Value("${orthanc.baseUrl}")
     private String orthancBaseUrl;
 
     public String authHeader() {

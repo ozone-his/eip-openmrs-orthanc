@@ -8,7 +8,6 @@
 package com.ozonehis.eip.openmrs.orthanc.converters;
 
 import ca.uhn.fhir.context.FhirContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +19,6 @@ import org.springframework.stereotype.Component;
 @Converter
 @Component
 public class ResourceConverter {
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Converter
     public static InputStream toInputStream(Bundle bundle) {

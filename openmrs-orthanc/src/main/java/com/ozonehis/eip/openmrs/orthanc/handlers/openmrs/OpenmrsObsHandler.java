@@ -25,7 +25,6 @@ public class OpenmrsObsHandler {
 
     public List<Attachment> getObsByPatientIDAndConceptID(
             ProducerTemplate producerTemplate, String patientID, String conceptID) throws JsonProcessingException {
-        // Concept ID 7cac8397-53cd-4f00-a6fe-028e8d743f8e
         Map<String, Object> headers = new HashMap<>();
         headers.put(Constants.HEADER_OPENMRS_PATIENT_ID, patientID);
         headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_ID, conceptID);

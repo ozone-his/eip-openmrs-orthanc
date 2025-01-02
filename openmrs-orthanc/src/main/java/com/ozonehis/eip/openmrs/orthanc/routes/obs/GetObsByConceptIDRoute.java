@@ -22,8 +22,7 @@ public class GetObsByConceptIDRoute extends RouteBuilder {
     @Autowired
     private OpenmrsConfig openmrsConfig;
 
-    private static final String GET_OBS_ENDPOINT =
-            "/rest/v1/obs?concept=7cac8397-53cd-4f00-a6fe-028e8d743f8e&v=full&patient="; // TODO: Remove hard coding
+    private static final String GET_OBS_ENDPOINT = "/ws/rest/v1/obs?v=full&concept=";
 
     @Override
     public void configure() {
@@ -34,7 +33,9 @@ public class GetObsByConceptIDRoute extends RouteBuilder {
                 .setHeader(Constants.CAMEL_HTTP_METHOD, constant(Constants.GET))
                 .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
                 .setHeader(Constants.AUTHORIZATION, constant(openmrsConfig.authHeader()))
-                .toD(openmrsConfig.getOpenmrsBaseUrl() + GET_OBS_ENDPOINT + "${header." + Constants.HEADER_OPENMRS_PATIENT_ID + "}")
+                .toD(openmrsConfig.getOpenmrsBaseUrl() + GET_OBS_ENDPOINT
+                        + "${header." + Constants.HEADER_OPENMRS_OBS_CONCEPT_ID + "}"
+                        + "&patient=" + "${header." + Constants.HEADER_OPENMRS_PATIENT_ID + "}")
                 .end();
         // spotless:on
     }
