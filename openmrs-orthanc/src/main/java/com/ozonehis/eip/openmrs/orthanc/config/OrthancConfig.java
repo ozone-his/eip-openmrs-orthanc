@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Component
 public class OrthancConfig {
+
     @Value("${orthanc.username}")
     private String orthancUsername;
 

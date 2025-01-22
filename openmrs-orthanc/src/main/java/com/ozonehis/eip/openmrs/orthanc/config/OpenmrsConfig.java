@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Component
 public class OpenmrsConfig {
+
     @Value("${openmrs.username}")
     private String openmrsUsername;
 
