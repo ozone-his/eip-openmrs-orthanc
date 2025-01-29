@@ -62,7 +62,6 @@ public class ImagingStudyProcessor implements Processor {
             ObjectMapper mapper = new ObjectMapper();
             Study[] studies = mapper.readValue(body, Study[].class);
 
-            log.info("ImagingStudyProcessor: {} and studies {}", studies.length, studies);
             for (Study study : studies) {
                 if (study.getPatientMainDicomTags().getOtherPatientIDs() == null) {
                     continue;

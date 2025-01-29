@@ -17,6 +17,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -25,8 +26,10 @@ public class OpenmrsAttachmentHandler {
 
     private static final String ATTACHMENT_FHIR_ENDPOINT = "%s/ws/rest/v1/attachment";
 
-    private static final String ORTHANC_VIEWER_BASE_URL =
-            "http://localhost:8889/stone-webviewer/index.html?study="; // TODO: Make the url configurable
+    private static final String ORTHANC_VIEWER_BASE_URL = "%s/stone-webviewer/index.html?study=%s";
+
+    @Value("${orthanc.publicUrl}")
+    private String orthancPublicUrl;
 
     @Autowired
     private OpenmrsConfig openmrsConfig;
@@ -35,7 +38,7 @@ public class OpenmrsAttachmentHandler {
     public void saveAttachment(byte[] binaryData, String patientID, String studyID) throws IOException {
         MultipartBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("fileCaption", ORTHANC_VIEWER_BASE_URL + studyID)
+                .addFormDataPart("fileCaption", String.format(ORTHANC_VIEWER_BASE_URL, orthancPublicUrl, studyID))
                 .addFormDataPart("patient", patientID)
                 .addFormDataPart(
                         "file", "radiology-image.png", RequestBody.create(binaryData, MediaType.parse("image/png")))
