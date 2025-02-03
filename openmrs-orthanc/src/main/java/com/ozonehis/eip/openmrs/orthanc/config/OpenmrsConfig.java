@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.eip.fhir.security.TokenCache;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,16 @@ public class OpenmrsConfig {
     @Value("${openmrs.baseUrl}")
     private String openmrsBaseUrl;
 
+    @Value("${oauth.enabled:false}")
+    private boolean isOauthEnabled;
+
+    @Autowired
+    private TokenCache tokenCache;
+
+    public boolean isOauthEnabled() {
+        return isOauthEnabled;
+    }
+
     public String authHeader() {
         if (StringUtils.isEmpty(getOpenmrsUsername())) {
             throw new IllegalArgumentException("OpenMRS username is empty");
@@ -41,6 +53,10 @@ public class OpenmrsConfig {
         }
         String auth = getOpenmrsUsername() + ":" + getOpenmrsPassword();
         byte[] encodedAuth = Base64.encodeBase64(auth.getBytes());
-        return "Basic " + new String(encodedAuth);
+        if (isOauthEnabled()) {
+            return "Bearer " + tokenCache.getTokenInfo().getAccessToken();
+        } else {
+            return "Basic " + new String(encodedAuth);
+        }
     }
 }
