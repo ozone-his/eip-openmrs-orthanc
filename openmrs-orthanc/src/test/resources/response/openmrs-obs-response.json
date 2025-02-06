@@ -1,0 +1,15 @@
+{
+  "results": [
+    {
+      "uuid": "c16da8bf-a2ea-4dd7-b1d4-bae2f6bd663b",
+      "display": "ATT IMAGE ATTACHMENT: m3ks",
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://o3.openmrs.org/openmrs/ws/rest/v1/obs/c16da8bf-a2ea-4dd7-b1d4-bae2f6bd663b",
+          "resourceAlias": "obs"
+        }
+      ]
+    }
+  ]
+}

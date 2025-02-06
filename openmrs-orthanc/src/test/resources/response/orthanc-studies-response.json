@@ -1,0 +1,232 @@
+[
+  {
+    "ID" : "0dff9280-2375f586-1297870c-4cbd6d1c-527e36e5",
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160922",
+    "MainDicomTags" : {
+      "AccessionNumber" : "0",
+      "InstitutionName" : "hY9",
+      "ReferringPhysicianName" : "dq0d00Q0Q00QQ",
+      "RequestedProcedureDescription" : "CT pied-cheville",
+      "StudyDate" : "20061005",
+      "StudyDescription" : "Extrémités inférieures^Pied_cheville_UHR (Adulte)",
+      "StudyID" : "A10025547593",
+      "StudyInstanceUID" : "2.16.840.1.113669.632.20.1211.10000315526",
+      "StudyTime" : "101556.921000"
+    },
+    "ParentPatient" : "a8d72883-45661eab-168bafbf-d799b4dc-4fc83a26",
+    "PatientMainDicomTags" : {
+      "PatientBirthDate" : "",
+      "PatientID" : "vAD7q3",
+      "PatientName" : "VIX",
+      "PatientSex" : "",
+      "OtherPatientIDs":"10000Y"
+    },
+    "Series" : [ "57d18fa9-f3c366c4-3d61c00a-fb5892bd-0535bfbf" ],
+    "Type" : "Study"
+  },
+  {
+    "ID" : "1c379a23-9fd28bba-02b60e5b-850ff34e-4349f09b",
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20240614T161946",
+    "MainDicomTags" : {
+      "AccessionNumber" : "2819497684894126",
+      "ReferringPhysicianName" : "",
+      "StudyDate" : "20091022",
+      "StudyDescription" : "RT^HEAD_NECK (Adult)",
+      "StudyID" : "",
+      "StudyInstanceUID" : "1.3.6.1.4.1.14519.5.2.1.2193.7172.847236098565581057121195872945",
+      "StudyTime" : "172721.327000"
+    },
+    "ParentPatient" : "65ce8003-696b2eb6-03adeee7-6561ce8e-3e03f13a",
+    "PatientMainDicomTags" : {
+      "PatientBirthDate" : "",
+      "PatientID" : "HN_P001",
+      "PatientName" : "HN_P001",
+      "PatientSex" : "M"
+    },
+    "Series" : [
+      "1d9c4560-6480f3d9-0a4d3654-65715f38-755ad2e0",
+      "52f4cb90-29d1d1a2-2ca34edd-4b8851fc-8cb269f2",
+      "9c7031b2-97909802-c35563e6-168bf0af-5cfbdce4"
+    ],
+    "Type" : "Study"
+  },
+  {
+    "ID" : "27f7126f-4f66fb14-03f4081b-f9341db2-53925988",
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160811",
+    "MainDicomTags" : {
+      "AccessionNumber" : "0",
+      "InstitutionName" : "7GEFF0GbzqCNo43Yd0,Ibu,zQSSX",
+      "ReferringPhysicianName" : "dAEvNTxZJO0E",
+      "RequestedProcedureDescription" : "IRM cérébrale, neuro-crâne",
+      "StudyDate" : "20061201",
+      "StudyDescription" : "IRM cérébrale, neuro-crâne",
+      "StudyID" : "218211405",
+      "StudyInstanceUID" : "2.16.840.1.113669.632.20.1211.10000357775",
+      "StudyTime" : "141645.000000"
+    },
+    "ParentPatient" : "16738bc3-e47ed42a-43ce044c-a3414a45-cb069bd0",
+    "PatientMainDicomTags" : {
+      "PatientBirthDate" : "19490301",
+      "PatientID" : "5Yp0E",
+      "PatientName" : "BRAINIX",
+      "PatientSex" : "0000"
+    },
+    "Series" : [
+      "1e2c125c-411b8e86-3f4fe68e-a7584dd3-c6da78f0",
+      "2ac1316d-3e432022-62eabff2-c59f5475-9b1ac3f8",
+      "3ca69615-fcd4a4fb-e5f2cc9d-9c7a49a5-add98bbf",
+      "4baa97c7-d53d3d82-a5eb9403-17ef5a77-4e0efb55",
+      "635faa23-fd8378ee-d03bce29-ee47c2fb-a65c5509",
+      "ae164c84-e5bd0366-ba937a6d-65414092-f294d6b6",
+      "dc0216d2-a406a5ad-31ef7a78-113ae9d9-29939f9e"
+    ],
+    "Type" : "Study"
+  },
+  {
+    "ID" : "49974143-ec23cb52-6b2a1c46-14d5daa0-0822ce1a",
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160911",
+    "MainDicomTags" : {
+      "AccessionNumber" : "A10011234814",
+      "InstitutionName" : "HUG",
+      "ReferringPhysicianName" : "CHIR-PED^CHIR-PE",
+      "RequestedProcedureDescription" : "CT2 TÊTE, FACE, SINUS",
+      "RequestingPhysician" : "KOHLER^Romain",
+      "StudyDate" : "20050927",
+      "StudyDescription" : "CT2 tête, face, sinus",
+      "StudyID" : "1361",
+      "StudyInstanceUID" : "2.16.840.1.113669.632.20.1211.10000098591",
+      "StudyTime" : "154952.000000"
+    },
+    "ParentPatient" : "2f74083e-9b042648-10edac14-b26950f8-f82ec3a0",
+    "PatientMainDicomTags" : {
+      "PatientBirthDate" : "19910101",
+      "PatientID" : "Vafk,T,6",
+      "PatientName" : "PHENIX",
+      "PatientSex" : ""
+    },
+    "Series" : [
+      "17cc7e52-4f1a3e4d-9182f727-56e9cc71-c037892f",
+      "37836232-d13a2350-fa1dedc5-962b31aa-010f8e52",
+      "7696013f-4c89c563-2b071693-5d1f97f6-f8ab232d"
+    ],
+    "Type" : "Study"
+  },
+  {
+    "ID" : "6b9e19d9-62094390-5f9ddb01-4a191ae7-9766b715",
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160800",
+    "MainDicomTags" : {
+      "AccessionNumber" : "1909715",
+      "InstitutionName" : "UCLA PET/CT",
+      "ReferringPhysicianName" : "LEE^PETER",
+      "RequestedProcedureDescription" : "PCT PET WHOLE BODY",
+      "RequestingPhysician" : "LEE^PETER^^^M.D.",
+      "StudyDate" : "20040721",
+      "StudyDescription" : "Thorax^1WB_PETCT",
+      "StudyID" : "4123274",
+      "StudyInstanceUID" : "1.2.840.113745.101000.1008000.38179.6792.6324567",
+      "StudyTime" : "100851.980000"
+    },
+    "ParentPatient" : "da39a3ee-5e6b4b0d-3255bfef-95601890-afd80709",
+    "PatientMainDicomTags" : {
+      "PatientName" : "ASSURANCETOURIX"
+    },
+    "Series" : [
+      "1de00990-03680ef4-0be6bd5b-73a7d350-fb46abfa",
+      "a69a10d7-068c5263-8aab53fe-de7af5f2-373a74bd",
+      "b4b79447-c5c2a0c2-89985adf-9656920f-cb0db5de"
+    ],
+    "Type" : "Study"
+  },
+  {
+    "ID" : "6c65289b-db2fcb71-7eaf73f4-8e12470c-a4d6d7cf",
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160814",
+    "MainDicomTags" : {
+      "AccessionNumber" : "1657271",
+      "InstitutionName" : "UCLA PET/CT",
+      "ReferringPhysicianName" : "BLACKWELL KEITH E  M.D.",
+      "RequestedProcedureDescription" : "PCT PET HEAD & NECK",
+      "RequestingPhysician" : "BLACKWELL^KEITH^E^^M.D.",
+      "StudyDate" : "20040304",
+      "StudyDescription" : "Neck^1HEAD_NECK_PETCT",
+      "StudyID" : "3964225",
+      "StudyInstanceUID" : "1.2.840.113745.101000.1008000.38048.4626.5933732",
+      "StudyTime" : "122600.979000"
+    },
+    "ParentPatient" : "0946fcb6-cf12ab43-bad958c1-bf057ad5-0fc6f54c",
+    "PatientMainDicomTags" : {
+      "PatientBirthDate" : "19410901",
+      "PatientID" : "fYET5.0",
+      "PatientName" : "COMUNIX"
+    },
+    "Series" : [
+      "318603c5-03e8cffc-a82b6ee1-3ccd3c1e-18d7e3bb",
+      "7124dba7-09803f33-98b73826-33f14632-ea842d29"
+    ],
+    "Type" : "Study"
+  },
+  {
+    "ID" : "b9c08539-26f93bde-c81ab0d7-bffaf2cb-a4d0bdd0",
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160833",
+    "MainDicomTags" : {
+      "InstitutionName" : "0ECJ52puWpVIjTuhnBA0um",
+      "ReferringPhysicianName" : "1",
+      "StudyDate" : "20070101",
+      "StudyDescription" : "Knee (R)",
+      "StudyID" : "1",
+      "StudyInstanceUID" : "1.2.840.113619.2.176.2025.1499492.7391.1171285944.390",
+      "StudyTime" : "120000.000000"
+    },
+    "ParentPatient" : "6816cb19-844d5aee-85245eba-28e841e6-2414fae2",
+    "PatientMainDicomTags" : {
+      "PatientID" : "ozp00SjY2xG",
+      "PatientName" : "KNIX"
+    },
+    "Series" : [
+      "20b9d0c2-97d85e07-f4dbf4d2-f09e7e6a-0c19062e",
+      "4d04593b-953ced51-87e93f11-ae4cf03c-25defdcd",
+      "5e343c3e-3633c396-03aefde8-ba0e08c7-9c8208d3",
+      "8ea120d7-5057d919-837dfbcc-ccd04e0f-7f3a94aa",
+      "edbfa0a9-fa2641d7-29514b1c-45881d0b-46c374bd",
+      "f2635388-f01d497a-15f7c06b-ad7dba06-c4c599fe"
+    ],
+    "Type" : "Study"
+  },
+  {
+    "ID" : "e98b9ac7-dd31ac40-ff046cb2-f0400d30-12f81d85",
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160830",
+    "MainDicomTags" : {
+      "AccessionNumber" : "0",
+      "InstitutionName" : "dPJ",
+      "ReferringPhysicianName" : "YzTEkpkak0p0Tk5",
+      "RequestedProcedureDescription" : "CT2 tête, face, sinus",
+      "StudyDate" : "20060531",
+      "StudyDescription" : "Tête^Dental (Adulte)",
+      "StudyID" : "A10020176376",
+      "StudyInstanceUID" : "2.16.840.1.113669.632.20.1211.10000231621",
+      "StudyTime" : "150423.546000"
+    },
+    "ParentPatient" : "46e6332c-677825b6-202fcf7c-f787bc5f-7b07c382",
+    "PatientMainDicomTags" : {
+      "PatientID" : "SOtNwu",
+      "PatientName" : "INCISIX"
+    },
+    "Series" : [ "52cc572c-3ee31930-c4b6d5e7-16c786dc-97bc209b" ],
+    "Type" : "Study"
+  }
+]

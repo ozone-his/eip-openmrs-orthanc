@@ -68,10 +68,12 @@ public class ImagingStudyProcessor implements Processor {
                 }
                 Patient openmrsPatient = openmrsPatientHandler.getPatientByIdentifier(
                         study.getPatientMainDicomTags().getOtherPatientIDs());
-                if (!doesObsExists(
-                        producerTemplate,
-                        openmrsPatient.getIdPart(),
-                        study.getImagingStudyMainDicomTags().getStudyInstanceUID())) {
+                if (openmrsPatient != null
+                        && !openmrsPatient.getIdentifier().isEmpty()
+                        && !doesObsExists(
+                                producerTemplate,
+                                openmrsPatient.getIdPart(),
+                                study.getImagingStudyMainDicomTags().getStudyInstanceUID())) {
                     createAttachment(
                             study,
                             openmrsPatient.getIdPart(),

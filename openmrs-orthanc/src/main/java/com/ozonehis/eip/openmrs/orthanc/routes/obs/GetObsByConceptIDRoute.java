@@ -10,12 +10,16 @@ package com.ozonehis.eip.openmrs.orthanc.routes.obs;
 import com.ozonehis.eip.openmrs.orthanc.Constants;
 import com.ozonehis.eip.openmrs.orthanc.config.OpenmrsConfig;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Component
 public class GetObsByConceptIDRoute extends RouteBuilder {
 
