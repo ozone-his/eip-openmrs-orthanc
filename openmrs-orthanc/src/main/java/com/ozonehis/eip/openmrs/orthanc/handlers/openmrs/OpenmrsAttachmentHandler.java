@@ -54,6 +54,8 @@ public class OpenmrsAttachmentHandler {
         log.info("Request: {} patientID {} studyID {}", request.body(), patientID, studyID);
 
         OkHttpClient client = new OkHttpClient();
+
+        // TODO: (Fix it) This is added as sometimes the fist post call to OpenMRS fails
         for (int i = 0; i < 10; i++) {
             if (apiCall(client, request)) {
                 break;

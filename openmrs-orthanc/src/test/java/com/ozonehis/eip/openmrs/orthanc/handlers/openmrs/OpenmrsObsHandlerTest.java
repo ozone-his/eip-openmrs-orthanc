@@ -1,0 +1,80 @@
+/*
+ * Copyright © 2024, Ozone HIS <info@ozone-his.com>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+package com.ozonehis.eip.openmrs.orthanc.handlers.openmrs;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ozonehis.eip.openmrs.orthanc.Constants;
+import com.ozonehis.eip.openmrs.orthanc.Utils;
+import com.ozonehis.eip.openmrs.orthanc.models.obs.Attachment;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.camel.ProducerTemplate;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+class OpenmrsObsHandlerTest {
+
+    private static final String PATIENT_ID = "7a43f897-4aad-4578-8680-e433acaa615d";
+
+    private static final String ATTACHMENT_CONCEPT_UUID = "7cac8397-53cd-4f00-a6fe-028e8d743f8e";
+
+    @Mock
+    private ProducerTemplate producerTemplate;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @InjectMocks
+    private OpenmrsObsHandler openmrsObsHandler;
+
+    private static AutoCloseable mocksCloser;
+
+    @BeforeEach
+    void setup() {
+        mocksCloser = openMocks(this);
+    }
+
+    @AfterAll
+    static void close() throws Exception {
+        mocksCloser.close();
+    }
+
+    @Test
+    void shouldReturnObsByPatientIDAndConceptID() throws JsonProcessingException {
+        // Setup
+        String responseBody = new Utils().readJSON("response/openmrs-obs-response.json");
+        Map<String, Object> headers = new HashMap<>();
+        headers.put(Constants.HEADER_OPENMRS_PATIENT_ID, PATIENT_ID);
+        headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_ID, ATTACHMENT_CONCEPT_UUID);
+
+        // Mock
+        when(producerTemplate.requestBodyAndHeaders(
+                        eq("direct:orthanc-get-openmrs-obs-route"), isNull(), eq(headers), eq(String.class)))
+                .thenReturn(responseBody);
+
+        // Act
+        List<Attachment> result =
+                openmrsObsHandler.getObsByPatientIDAndConceptID(producerTemplate, PATIENT_ID, ATTACHMENT_CONCEPT_UUID);
+
+        // Verify
+        assertEquals(1, result.size());
+        assertNotNull(result.get(0).getUuid());
+    }
+}
