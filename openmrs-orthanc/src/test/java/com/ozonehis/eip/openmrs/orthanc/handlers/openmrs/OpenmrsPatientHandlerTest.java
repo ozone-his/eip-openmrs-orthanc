@@ -32,12 +32,6 @@ class OpenmrsPatientHandlerTest {
     private IGenericClient openmrsFhirClient;
 
     @Mock
-    private ICreate iCreate;
-
-    @Mock
-    private ICreateTyped iCreateTyped;
-
-    @Mock
     private IUntypedQuery iUntypedQuery;
 
     @Mock

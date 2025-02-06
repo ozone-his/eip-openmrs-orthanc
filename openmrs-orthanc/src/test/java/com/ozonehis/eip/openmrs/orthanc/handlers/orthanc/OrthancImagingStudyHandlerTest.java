@@ -5,10 +5,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package com.ozonehis.eip.openmrs.orthanc.handlers.openmrs;
+package com.ozonehis.eip.openmrs.orthanc.handlers.orthanc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
@@ -17,9 +16,9 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ozonehis.eip.openmrs.orthanc.Constants;
 import com.ozonehis.eip.openmrs.orthanc.Utils;
-import com.ozonehis.eip.openmrs.orthanc.models.obs.Attachment;
+import com.ozonehis.eip.openmrs.orthanc.config.OrthancConfig;
+import com.ozonehis.eip.openmrs.orthanc.models.series.Series;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.camel.ProducerTemplate;
 import org.junit.jupiter.api.AfterAll;
@@ -28,17 +27,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-class OpenmrsObsHandlerTest {
-
-    private static final String PATIENT_ID = "7a43f897-4aad-4578-8680-e433acaa615d";
-
-    private static final String ATTACHMENT_CONCEPT_UUID = "7cac8397-53cd-4f00-a6fe-028e8d743f8e";
+class OrthancImagingStudyHandlerTest {
+    private static final String SERIES_ID = "17cc7e52-4f1a3e4d-9182f727-56e9cc71-c037892f";
 
     @Mock
     private ProducerTemplate producerTemplate;
 
+    @Mock
+    private OrthancConfig orthancConfig;
+
     @InjectMocks
-    private OpenmrsObsHandler openmrsObsHandler;
+    private OrthancImagingStudyHandler orthancImagingStudyHandler;
 
     private static AutoCloseable mocksCloser;
 
@@ -53,24 +52,22 @@ class OpenmrsObsHandlerTest {
     }
 
     @Test
-    void shouldReturnObsByPatientIDAndConceptID() throws JsonProcessingException {
+    void shouldReturnSeriesByID() throws JsonProcessingException {
         // Setup
-        String responseBody = new Utils().readJSON("response/openmrs-obs-response.json");
+        String responseBody = new Utils().readJSON("response/orthanc-single-series-response.json");
         Map<String, Object> headers = new HashMap<>();
-        headers.put(Constants.HEADER_OPENMRS_PATIENT_ID, PATIENT_ID);
-        headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_ID, ATTACHMENT_CONCEPT_UUID);
+        headers.put(Constants.HEADER_SERIES_ID, SERIES_ID);
 
         // Mock
         when(producerTemplate.requestBodyAndHeaders(
-                        eq("direct:orthanc-get-openmrs-obs-route"), isNull(), eq(headers), eq(String.class)))
+                        eq("direct:orthanc-get-series-route"), isNull(), eq(headers), eq(String.class)))
                 .thenReturn(responseBody);
 
         // Act
-        List<Attachment> result =
-                openmrsObsHandler.getObsByPatientIDAndConceptID(producerTemplate, PATIENT_ID, ATTACHMENT_CONCEPT_UUID);
+        Series result = orthancImagingStudyHandler.getSeriesByID(producerTemplate, SERIES_ID);
 
         // Verify
-        assertEquals(1, result.size());
-        assertNotNull(result.get(0).getUuid());
+        assertEquals(SERIES_ID, result.getId());
+        assertFalse(result.getInstances().isEmpty());
     }
 }
