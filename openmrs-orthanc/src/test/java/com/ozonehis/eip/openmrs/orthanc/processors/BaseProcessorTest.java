@@ -9,14 +9,29 @@ package com.ozonehis.eip.openmrs.orthanc.processors;
 
 import static org.openmrs.eip.fhir.Constants.HEADER_FHIR_EVENT_TYPE;
 
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
 import org.apache.camel.support.DefaultMessage;
 import org.apache.camel.test.spring.junit5.CamelSpringTestSupport;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.HumanName;
+import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.ServiceRequest;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
@@ -58,7 +73,7 @@ public abstract class BaseProcessorTest extends CamelSpringTestSupport {
         serviceRequest.setSubject(new Reference("Patient/iiaea498-e046-09c6-bf9c-dbbc7d39f54c"));
         serviceRequest.setCode(
                 new CodeableConcept().setCoding(Collections.singletonList(new Coding().setCode("123ABC"))));
-        serviceRequest.setOccurrence(new Period().setStart(new Date(1628468672000L)));
+        serviceRequest.setOccurrence(new Period().setStart(getDate(2021, Calendar.AUGUST, 9, 12, 24, 32)));
         serviceRequest.setEncounter(new Reference(ENCOUNTER_REFERENCE_ID));
         return serviceRequest;
     }
@@ -66,7 +81,7 @@ public abstract class BaseProcessorTest extends CamelSpringTestSupport {
     protected Encounter buildEncounter() {
         Encounter encounter = new Encounter();
         encounter.setPartOf(new Reference(ENCOUNTER_REFERENCE_ID));
-        encounter.setPeriod(new Period().setStart(new Date(1728468672000L)));
+        encounter.setPeriod(new Period().setStart(getDate(2024, Calendar.OCTOBER, 9, 10, 11, 12)));
         return encounter;
     }
 
@@ -74,5 +89,14 @@ public abstract class BaseProcessorTest extends CamelSpringTestSupport {
         Observation observation = new Observation();
         observation.setId("itaea498-e022-43c6-bf9c-dbbc7d39f67i");
         return observation;
+    }
+
+    private Date getDate(int year, int month, int date, int hourOfDay, int minute, int second) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.set(year, month, date, hourOfDay, minute, second);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        simpleDateFormat.setCalendar(calendar);
+
+        return simpleDateFormat.getCalendar().getTime();
     }
 }

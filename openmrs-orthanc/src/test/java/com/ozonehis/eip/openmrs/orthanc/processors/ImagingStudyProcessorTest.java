@@ -9,7 +9,9 @@ package com.ozonehis.eip.openmrs.orthanc.processors;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 import static org.openmrs.eip.fhir.Constants.HEADER_FHIR_EVENT_TYPE;
 
@@ -132,7 +134,7 @@ class ImagingStudyProcessorTest extends BaseProcessorTest {
         when(openmrsPatientHandler.getPatientByIdentifier(PATIENT_IDENTIFIER)).thenReturn(patient);
         when(orthancImagingStudyHandler.getSeriesByID(any(), any())).thenReturn(getSeries());
         when(orthancImagingStudyHandler.fetchStudyBinaryData(any())).thenReturn(new byte[] {});
-        when(openmrsObsHandler.getObsByPatientIDAndConceptID(any(), any(), any()))
+        when(openmrsObsHandler.getObsByPatientUUIDAndConceptUUID(any(), any(), any()))
                 .thenReturn(Collections.singletonList(attachment));
 
         // Act

@@ -7,7 +7,8 @@
  */
 package com.ozonehis.eip.openmrs.orthanc.handlers.orthanc;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
@@ -28,6 +29,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 class OrthancImagingStudyHandlerTest {
+
     private static final String SERIES_ID = "17cc7e52-4f1a3e4d-9182f727-56e9cc71-c037892f";
 
     @Mock

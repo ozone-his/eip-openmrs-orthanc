@@ -89,13 +89,13 @@ public class ImagingStudyProcessor implements Processor {
         }
     }
 
-    private void createAttachment(Study study, String patientID, String instanceID) throws IOException {
+    private void createAttachment(Study study, String patientUUID, String instanceID) throws IOException {
         String studyImageUrl = buildStudyImageUrl(instanceID);
         byte[] orthancStudyBinaryData = orthancImagingStudyHandler.fetchStudyBinaryData(studyImageUrl);
         if (orthancStudyBinaryData != null) {
             openmrsAttachmentHandler.saveAttachment(
                     orthancStudyBinaryData,
-                    patientID,
+                    patientUUID,
                     study.getImagingStudyMainDicomTags().getStudyInstanceUID());
         }
     }
@@ -104,10 +104,10 @@ public class ImagingStudyProcessor implements Processor {
         return String.format(orthancRenderedImageEndpoint, orthancBaseUrl, instanceID);
     }
 
-    private boolean doesObsExists(ProducerTemplate producerTemplate, String patientID, String imagingStudyID)
+    private boolean doesObsExists(ProducerTemplate producerTemplate, String patientUUID, String imagingStudyID)
             throws JsonProcessingException {
         List<Attachment> attachmentList =
-                openmrsObsHandler.getObsByPatientIDAndConceptID(producerTemplate, patientID, attachmentConceptId);
+                openmrsObsHandler.getObsByPatientUUIDAndConceptUUID(producerTemplate, patientUUID, attachmentConceptId);
         for (Attachment attachment : attachmentList) {
             if (attachment.getComment().contains(imagingStudyID)) {
                 return true;

@@ -8,7 +8,6 @@
 package com.ozonehis.eip.openmrs.orthanc.handlers.openmrs;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
@@ -30,9 +29,11 @@ import org.mockito.Mock;
 
 class OpenmrsObsHandlerTest {
 
-    private static final String PATIENT_ID = "7a43f897-4aad-4578-8680-e433acaa615d";
+    private static final String PATIENT_UUID = "7a43f897-4aad-4578-8680-e433acaa615d";
 
     private static final String ATTACHMENT_CONCEPT_UUID = "7cac8397-53cd-4f00-a6fe-028e8d743f8e";
+
+    private static final String OBS_UUID = "c16da8bf-a2ea-4dd7-b1d4-bae2f6bd663b";
 
     @Mock
     private ProducerTemplate producerTemplate;
@@ -53,12 +54,12 @@ class OpenmrsObsHandlerTest {
     }
 
     @Test
-    void shouldReturnObsByPatientIDAndConceptID() throws JsonProcessingException {
+    void shouldReturnObsByPatientUUIDAndConceptUUID() throws JsonProcessingException {
         // Setup
         String responseBody = new Utils().readJSON("response/openmrs-obs-response.json");
         Map<String, Object> headers = new HashMap<>();
-        headers.put(Constants.HEADER_OPENMRS_PATIENT_ID, PATIENT_ID);
-        headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_ID, ATTACHMENT_CONCEPT_UUID);
+        headers.put(Constants.HEADER_OPENMRS_PATIENT_UUID, PATIENT_UUID);
+        headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_UUID, ATTACHMENT_CONCEPT_UUID);
 
         // Mock
         when(producerTemplate.requestBodyAndHeaders(
@@ -66,11 +67,11 @@ class OpenmrsObsHandlerTest {
                 .thenReturn(responseBody);
 
         // Act
-        List<Attachment> result =
-                openmrsObsHandler.getObsByPatientIDAndConceptID(producerTemplate, PATIENT_ID, ATTACHMENT_CONCEPT_UUID);
+        List<Attachment> result = openmrsObsHandler.getObsByPatientUUIDAndConceptUUID(
+                producerTemplate, PATIENT_UUID, ATTACHMENT_CONCEPT_UUID);
 
         // Verify
         assertEquals(1, result.size());
-        assertNotNull(result.get(0).getUuid());
+        assertEquals(OBS_UUID, result.get(0).getUuid());
     }
 }

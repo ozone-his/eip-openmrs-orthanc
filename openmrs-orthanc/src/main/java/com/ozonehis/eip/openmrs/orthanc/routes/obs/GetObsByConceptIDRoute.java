@@ -38,8 +38,8 @@ public class GetObsByConceptIDRoute extends RouteBuilder {
                 .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
                 .setHeader(Constants.AUTHORIZATION, constant(openmrsConfig.authHeader()))
                 .toD(openmrsConfig.getOpenmrsBaseUrl() + GET_OBS_ENDPOINT
-                        + "${header." + Constants.HEADER_OPENMRS_OBS_CONCEPT_ID + "}"
-                        + "&patient=" + "${header." + Constants.HEADER_OPENMRS_PATIENT_ID + "}")
+                        + "${header." + Constants.HEADER_OPENMRS_OBS_CONCEPT_UUID + "}"
+                        + "&patient=" + "${header." + Constants.HEADER_OPENMRS_PATIENT_UUID + "}")
                 .end();
         // spotless:on
     }
