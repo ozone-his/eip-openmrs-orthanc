@@ -1,0 +1,25 @@
+{
+  "ExpectedNumberOfInstances": null,
+  "ID": "17cc7e52-4f1a3e4d-9182f727-56e9cc71-c037892f",
+  "Instances": [
+    "021587a8-3b4629df-96455d78-79c4df7b-1ea4714e"
+  ],
+  "IsStable": true,
+  "Labels": [],
+  "LastUpdate": "20231109T160911",
+  "MainDicomTags": {
+    "ContrastBolusAgent": "CONTRAST",
+    "ImageOrientationPatient": "1\\0\\0\\0\\1\\0",
+    "Manufacturer": "Philips",
+    "Modality": "CT",
+    "PerformedProcedureStepDescription": "CT2 tête, face, sinus",
+    "ProtocolName": "COU 2 mm/Neck/Hx",
+    "SeriesDescription": "COU IV",
+    "SeriesInstanceUID": "1.2.840.113704.1.111.5692.1127829280.6",
+    "SeriesNumber": "2277",
+    "StationName": "ctrad"
+  },
+  "ParentStudy": "49974143-ec23cb52-6b2a1c46-14d5daa0-0822ce1a",
+  "Status": "Unknown",
+  "Type": "Series"
+}

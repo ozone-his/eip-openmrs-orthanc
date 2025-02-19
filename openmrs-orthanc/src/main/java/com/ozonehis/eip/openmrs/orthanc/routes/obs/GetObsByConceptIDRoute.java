@@ -10,12 +10,16 @@ package com.ozonehis.eip.openmrs.orthanc.routes.obs;
 import com.ozonehis.eip.openmrs.orthanc.Constants;
 import com.ozonehis.eip.openmrs.orthanc.config.OpenmrsConfig;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Component
 public class GetObsByConceptIDRoute extends RouteBuilder {
 
@@ -34,8 +38,8 @@ public class GetObsByConceptIDRoute extends RouteBuilder {
                 .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
                 .setHeader(Constants.AUTHORIZATION, constant(openmrsConfig.authHeader()))
                 .toD(openmrsConfig.getOpenmrsBaseUrl() + GET_OBS_ENDPOINT
-                        + "${header." + Constants.HEADER_OPENMRS_OBS_CONCEPT_ID + "}"
-                        + "&patient=" + "${header." + Constants.HEADER_OPENMRS_PATIENT_ID + "}")
+                        + "${header." + Constants.HEADER_OPENMRS_OBS_CONCEPT_UUID + "}"
+                        + "&patient=" + "${header." + Constants.HEADER_OPENMRS_PATIENT_UUID + "}")
                 .end();
         // spotless:on
     }

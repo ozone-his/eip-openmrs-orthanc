@@ -1,0 +1,676 @@
+[
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "17cc7e52-4f1a3e4d-9182f727-56e9cc71-c037892f",
+    "Instances" : [
+      "021587a8-3b4629df-96455d78-79c4df7b-1ea4714e"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160911",
+    "MainDicomTags" : {
+      "ContrastBolusAgent" : "CONTRAST",
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "Philips",
+      "Modality" : "CT",
+      "PerformedProcedureStepDescription" : "CT2 tête, face, sinus",
+      "ProtocolName" : "COU 2 mm/Neck/Hx",
+      "SeriesDescription" : "COU IV",
+      "SeriesInstanceUID" : "1.2.840.113704.1.111.5692.1127829280.6",
+      "SeriesNumber" : "2277",
+      "StationName" : "ctrad"
+    },
+    "ParentStudy" : "49974143-ec23cb52-6b2a1c46-14d5daa0-0822ce1a",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "1d9c4560-6480f3d9-0a4d3654-65715f38-755ad2e0",
+    "Instances" : [ "6a75616c-e39d96cb-e752cdd5-4f65d1b1-dee0451e" ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20240614T161929",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "Varian Medical Systems",
+      "Modality" : "RTDOSE",
+      "SeriesDescription" : "Eclipse Doses",
+      "SeriesInstanceUID" : "1.3.6.1.4.1.14519.5.2.1.2193.7172.329574933994116044160154909094",
+      "SeriesNumber" : "41"
+    },
+    "ParentStudy" : "1c379a23-9fd28bba-02b60e5b-850ff34e-4349f09b",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "1de00990-03680ef4-0be6bd5b-73a7d350-fb46abfa",
+    "Instances" : [
+      "0092ce4b-9d4b0966-f5fd8c6a-beb6daa7-2e6bcda9"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160800",
+    "MainDicomTags" : {
+      "BodyPartExamined" : "CHEST",
+      "ContrastBolusAgent" : "YES",
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "SIEMENS",
+      "Modality" : "CT",
+      "PerformedProcedureStepDescription" : "PCT PET WHOLE BODY",
+      "ProtocolName" : "1WB_PETCT",
+      "SeriesDate" : "20040701",
+      "SeriesDescription" : "CT WB w/contrast 5.0 B30s",
+      "SeriesInstanceUID" : "1.3.12.2.1107.5.99.1.24063.4.0.446793548272429",
+      "SeriesNumber" : "2",
+      "SeriesTime" : "120000.000000",
+      "StationName" : "CT36085"
+    },
+    "ParentStudy" : "6b9e19d9-62094390-5f9ddb01-4a191ae7-9766b715",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "1e2c125c-411b8e86-3f4fe68e-a7584dd3-c6da78f0",
+    "Instances" : [
+      "08ff3a1a-c8fb57d9-4e24d9cb-2ed22b80-0ff7461e"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160811",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "0.99971222877502\\7.8810308973E-12\\0.02398800104856\\-0.0017278126906\\0.99740260839462\\0.07200747728347",
+      "Manufacturer" : "Philips Medical Systems",
+      "Modality" : "MR",
+      "NumberOfTemporalPositions" : "1",
+      "PerformedProcedureStepDescription" : "IRM cérébrale, neuro-crâne",
+      "ProtocolName" : "sT2W/FLAIR SENSE",
+      "SeriesDate" : "20061201",
+      "SeriesDescription" : "sT2W/FLAIR",
+      "SeriesInstanceUID" : "1.3.46.670589.11.0.0.11.4.2.0.8743.5.5396.2006120114285654497",
+      "SeriesNumber" : "401",
+      "SeriesTime" : "142856.530000",
+      "StationName" : "intera"
+    },
+    "ParentStudy" : "27f7126f-4f66fb14-03f4081b-f9341db2-53925988",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "20b9d0c2-97d85e07-f4dbf4d2-f09e7e6a-0c19062e",
+    "Instances" : [
+      "12b6e99c-fb9f90f3-cfe5ccaf-4267fe4f-8cefaeaf"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160833",
+    "MainDicomTags" : {
+      "CardiacNumberOfImages" : "0",
+      "ImageOrientationPatient" : "0.999993\\-0.0036927\\0\\-0\\-0\\-1",
+      "ImagesInAcquisition" : "20",
+      "Manufacturer" : "GE MEDICAL SYSTEMS",
+      "Modality" : "MR",
+      "OperatorsName" : "ca",
+      "ProtocolName" : "324-58-2995/5",
+      "SeriesDate" : "20070101",
+      "SeriesDescription" : "Cor FSE PD",
+      "SeriesInstanceUID" : "1.2.840.113619.2.176.2025.1499492.7391.1171285944.393",
+      "SeriesNumber" : "4",
+      "SeriesTime" : "120000.000000",
+      "StationName" : "TWINOW"
+    },
+    "ParentStudy" : "b9c08539-26f93bde-c81ab0d7-bffaf2cb-a4d0bdd0",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "2ac1316d-3e432022-62eabff2-c59f5475-9b1ac3f8",
+    "Instances" : [
+      "00402ce7-ac05c687-4d0839bc-cecd4fad-3d1b7eed"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160805",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "0.99971222877502\\7.8810308973E-12\\0.02398800104856\\-0.0017278126906\\0.99740260839462\\0.07200747728347",
+      "Manufacturer" : "Philips Medical Systems",
+      "Modality" : "MR",
+      "NumberOfTemporalPositions" : "1",
+      "PerformedProcedureStepDescription" : "IRM cérébrale, neuro-crâne",
+      "ProtocolName" : "T2W/FE-EPI SENSE",
+      "SeriesDate" : "20061201",
+      "SeriesDescription" : "T2W/FE-EPI",
+      "SeriesInstanceUID" : "1.3.46.670589.11.0.0.11.4.2.0.8743.5.5396.2006120114314125550",
+      "SeriesNumber" : "501",
+      "SeriesTime" : "143141.150000",
+      "StationName" : "intera"
+    },
+    "ParentStudy" : "27f7126f-4f66fb14-03f4081b-f9341db2-53925988",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "318603c5-03e8cffc-a82b6ee1-3ccd3c1e-18d7e3bb",
+    "Instances" : [
+      "0427f06c-e5d063fd-bb328da6-b8b5fdbd-39477207"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160814",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "CPS",
+      "Modality" : "PT",
+      "NumberOfSlices" : "83",
+      "PerformedProcedureStepDescription" : "Neck^1HEAD_NECK_PETCT",
+      "SeriesDate" : "20040304",
+      "SeriesDescription" : "PET WB",
+      "SeriesInstanceUID" : "1.3.12.2.1107.5.1.4.36085.2.0.3752006615092156",
+      "SeriesNumber" : "604",
+      "SeriesTime" : "122825.707000",
+      "SeriesType" : "WHOLE BODY\\IMAGE",
+      "StationName" : "petCT1-mp1"
+    },
+    "ParentStudy" : "6c65289b-db2fcb71-7eaf73f4-8e12470c-a4d6d7cf",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "37836232-d13a2350-fa1dedc5-962b31aa-010f8e52",
+    "Instances" : [ "6582b1c0-292ad5ab-ba0f088f-f7a1766f-9a29a54f" ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160851",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "0\\1\\0\\0\\0\\-1",
+      "Manufacturer" : "Philips",
+      "Modality" : "CT",
+      "PerformedProcedureStepDescription" : "CT2 tête, face, sinus",
+      "ProtocolName" : "COU 2 mm/Neck/Sv",
+      "SeriesInstanceUID" : "1.2.840.113704.1.111.5692.1127828999.2",
+      "SeriesNumber" : "2276",
+      "StationName" : "ctrad"
+    },
+    "ParentStudy" : "49974143-ec23cb52-6b2a1c46-14d5daa0-0822ce1a",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "3ca69615-fcd4a4fb-e5f2cc9d-9c7a49a5-add98bbf",
+    "Instances" : [
+      "01a6ffdc-335f82a7-c79360c2-2e6bbc35-d24ca33d"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160803",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "0.99971222877502\\7.8810308973E-12\\0.02398800104856\\-0.0017278126906\\0.99740260839462\\0.07200747728347",
+      "Manufacturer" : "Philips Medical Systems",
+      "Modality" : "MR",
+      "NumberOfTemporalPositions" : "1",
+      "PerformedProcedureStepDescription" : "IRM cérébrale, neuro-crâne",
+      "ProtocolName" : "sT2/TSE/T SENSE",
+      "SeriesDate" : "20061201",
+      "SeriesDescription" : "sT2/TSE/T",
+      "SeriesInstanceUID" : "1.3.46.670589.11.0.0.11.4.2.0.8743.5.5396.2006120114262848496",
+      "SeriesNumber" : "301",
+      "SeriesTime" : "142628.430000",
+      "StationName" : "intera"
+    },
+    "ParentStudy" : "27f7126f-4f66fb14-03f4081b-f9341db2-53925988",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "4baa97c7-d53d3d82-a5eb9403-17ef5a77-4e0efb55",
+    "Instances" : [
+      "23f1307c-25e6d5fa-73de34cb-8ee02fa0-15ac4cc5"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160811",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "0.99971222877502\\7.8810308973E-12\\0.02398800104856\\-0.0017278126906\\0.99740260839462\\0.07200747728347",
+      "Manufacturer" : "Philips Medical Systems",
+      "Modality" : "MR",
+      "NumberOfTemporalPositions" : "1",
+      "PerformedProcedureStepDescription" : "IRM cérébrale, neuro-crâne",
+      "ProtocolName" : "T1/SE/extrp CLEAR",
+      "SeriesDate" : "20061201",
+      "SeriesDescription" : "T1/SE/extrp",
+      "SeriesInstanceUID" : "1.3.46.670589.11.0.0.11.4.2.0.8743.5.5396.2006120114395892620",
+      "SeriesNumber" : "701",
+      "SeriesTime" : "143958.890000",
+      "StationName" : "intera"
+    },
+    "ParentStudy" : "27f7126f-4f66fb14-03f4081b-f9341db2-53925988",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "4d04593b-953ced51-87e93f11-ae4cf03c-25defdcd",
+    "Instances" : [
+      "16606f69-83b48518-ab34304a-c8871b7f-a9298d74"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160833",
+    "MainDicomTags" : {
+      "CardiacNumberOfImages" : "0",
+      "ImageOrientationPatient" : "-0\\1\\0\\-0\\-0\\-1",
+      "ImagesInAcquisition" : "22",
+      "Manufacturer" : "GE MEDICAL SYSTEMS",
+      "Modality" : "MR",
+      "OperatorsName" : "ca",
+      "ProtocolName" : "324-58-2995/4",
+      "SeriesDate" : "20070101",
+      "SeriesDescription" : "Sag FRSE PD FS",
+      "SeriesInstanceUID" : "1.2.840.113619.2.176.2025.1499492.7391.1171285944.392",
+      "SeriesNumber" : "3",
+      "SeriesTime" : "120000.000000",
+      "StationName" : "TWINOW"
+    },
+    "ParentStudy" : "b9c08539-26f93bde-c81ab0d7-bffaf2cb-a4d0bdd0",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "52cc572c-3ee31930-c4b6d5e7-16c786dc-97bc209b",
+    "Instances" : [
+      "011ead8d-f2508edd-da315604-80b002df-e678b796"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160830",
+    "MainDicomTags" : {
+      "BodyPartExamined" : "HEAD",
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "SIEMENS",
+      "Modality" : "CT",
+      "OperatorsName" : "MORENO AITOR",
+      "ProtocolName" : "Dental",
+      "SeriesDate" : "20060531",
+      "SeriesDescription" : "Dentascan  0.75  H60s",
+      "SeriesInstanceUID" : "1.3.12.2.1107.5.1.4.54693.30000006053107175587500014744",
+      "SeriesNumber" : "3",
+      "SeriesTime" : "151323.937000",
+      "StationName" : "CT54693"
+    },
+    "ParentStudy" : "e98b9ac7-dd31ac40-ff046cb2-f0400d30-12f81d85",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "52f4cb90-29d1d1a2-2ca34edd-4b8851fc-8cb269f2",
+    "Instances" : [
+      "001a7d82-54008387-7b23ad57-8fb6202a-6d3b305b"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20240614T161946",
+    "MainDicomTags" : {
+      "BodyPartExamined" : "CHEST",
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "SIEMENS",
+      "Modality" : "CT",
+      "SeriesDate" : "20091022",
+      "SeriesDescription" : "HEAD/NECK  2.0  B30s",
+      "SeriesInstanceUID" : "1.3.6.1.4.1.14519.5.2.1.2193.7172.215111709746721743805035350686",
+      "SeriesNumber" : "4",
+      "SeriesTime" : "173151.203000"
+    },
+    "ParentStudy" : "1c379a23-9fd28bba-02b60e5b-850ff34e-4349f09b",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "57d18fa9-f3c366c4-3d61c00a-fb5892bd-0535bfbf",
+    "Instances" : [
+      "05be1d54-96701b7c-905af136-35f4f3a2-d250175e"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160922",
+    "MainDicomTags" : {
+      "BodyPartExamined" : "EXTREMITY",
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "SIEMENS",
+      "Modality" : "CT",
+      "OperatorsName" : "AMACKER SANDRINE",
+      "ProtocolName" : "Pied_cheville_UHR",
+      "SeriesDate" : "20061005",
+      "SeriesDescription" : "Pied/cheville  1.0mm std",
+      "SeriesInstanceUID" : "1.3.12.2.1107.5.1.4.54693.30000006100507010800000005268",
+      "SeriesNumber" : "5",
+      "SeriesTime" : "102051.046000",
+      "StationName" : "CT54693"
+    },
+    "ParentStudy" : "0dff9280-2375f586-1297870c-4cbd6d1c-527e36e5",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "5e343c3e-3633c396-03aefde8-ba0e08c7-9c8208d3",
+    "Instances" : [
+      "11066dfe-1e6178c3-6f8e3fc8-3ef8dfa9-b8e77bfe"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160832",
+    "MainDicomTags" : {
+      "CardiacNumberOfImages" : "0",
+      "ImageOrientationPatient" : "-0\\1\\0\\-0\\-0\\-1",
+      "ImagesInAcquisition" : "22",
+      "Manufacturer" : "GE MEDICAL SYSTEMS",
+      "Modality" : "MR",
+      "OperatorsName" : "ca",
+      "ProtocolName" : "324-58-2995/7",
+      "SeriesDate" : "20070101",
+      "SeriesDescription" : "Sag FSE T2",
+      "SeriesInstanceUID" : "1.2.840.113619.2.176.2025.1499492.7391.1171285944.395",
+      "SeriesNumber" : "6",
+      "SeriesTime" : "120000.000000",
+      "StationName" : "TWINOW"
+    },
+    "ParentStudy" : "b9c08539-26f93bde-c81ab0d7-bffaf2cb-a4d0bdd0",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "635faa23-fd8378ee-d03bce29-ee47c2fb-a65c5509",
+    "Instances" : [
+      "065baa49-a7b4e4a0-e7468f1d-e9b5bca8-56316fa2"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160807",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "0.99971222877502\\7.8810308973E-12\\0.02398800104856\\-0.0017278126906\\0.99740260839462\\0.07200747728347",
+      "Manufacturer" : "Philips Medical Systems",
+      "Modality" : "MR",
+      "NumberOfTemporalPositions" : "1",
+      "PerformedProcedureStepDescription" : "IRM cérébrale, neuro-crâne",
+      "ProtocolName" : "SOUS",
+      "SeriesDate" : "20061201",
+      "SeriesDescription" : "SOUS",
+      "SeriesInstanceUID" : "1.3.46.670589.11.0.0.11.4.2.0.8743.5.3800.2006120117110979000",
+      "SeriesNumber" : "702",
+      "SeriesTime" : "143958.890000",
+      "StationName" : "intera"
+    },
+    "ParentStudy" : "27f7126f-4f66fb14-03f4081b-f9341db2-53925988",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "7124dba7-09803f33-98b73826-33f14632-ea842d29",
+    "Instances" : [
+      "042087e4-44ce2824-cf8c2a09-8857c459-b72ce42f"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160814",
+    "MainDicomTags" : {
+      "BodyPartExamined" : "NECK",
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "SIEMENS",
+      "Modality" : "CT",
+      "PerformedProcedureStepDescription" : "Neck^1HEAD_NECK_PETCT",
+      "ProtocolName" : "1HEAD_NECK_PETCT",
+      "SeriesDate" : "20040304",
+      "SeriesDescription" : "CT HEAD/NK 5.0 B30s",
+      "SeriesInstanceUID" : "1.3.12.2.1107.5.1.4.36085.4.0.13457320123409917",
+      "SeriesNumber" : "2",
+      "SeriesTime" : "122647.866000",
+      "StationName" : "CT36085"
+    },
+    "ParentStudy" : "6c65289b-db2fcb71-7eaf73f4-8e12470c-a4d6d7cf",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "7696013f-4c89c563-2b071693-5d1f97f6-f8ab232d",
+    "Instances" : [
+      "001b6592-37c2fbe4-2c07c724-ce9607e2-2bd210e8"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160851",
+    "MainDicomTags" : {
+      "ContrastBolusAgent" : "CONTRAST",
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "Philips",
+      "Modality" : "CT",
+      "PerformedProcedureStepDescription" : "CT2 tête, face, sinus",
+      "ProtocolName" : "COU 2 mm/Neck/Hx",
+      "SeriesDescription" : "OS",
+      "SeriesInstanceUID" : "1.2.840.113704.1.111.5692.1127829423.10",
+      "SeriesNumber" : "2278",
+      "StationName" : "ctrad"
+    },
+    "ParentStudy" : "49974143-ec23cb52-6b2a1c46-14d5daa0-0822ce1a",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "8ea120d7-5057d919-837dfbcc-ccd04e0f-7f3a94aa",
+    "Instances" : [
+      "05407173-83a23ad9-fc8658d1-d8ba39a6-3acbe7e8"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160830",
+    "MainDicomTags" : {
+      "CardiacNumberOfImages" : "0",
+      "ImageOrientationPatient" : "1\\-0\\0\\-0\\-0\\-1",
+      "ImagesInAcquisition" : "27",
+      "Manufacturer" : "GE MEDICAL SYSTEMS",
+      "Modality" : "MR",
+      "OperatorsName" : "ca",
+      "SeriesDate" : "20070101",
+      "SeriesDescription" : "Loc (Right)",
+      "SeriesInstanceUID" : "1.2.840.113619.2.176.2025.1499492.7391.1171285944.388",
+      "SeriesNumber" : "1",
+      "SeriesTime" : "120000.000000",
+      "StationName" : "TWINOW"
+    },
+    "ParentStudy" : "b9c08539-26f93bde-c81ab0d7-bffaf2cb-a4d0bdd0",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "9c7031b2-97909802-c35563e6-168bf0af-5cfbdce4",
+    "Instances" : [ "612c520c-0781e2e3-3ac71240-875834dc-ea3b2bac" ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20240614T161928",
+    "MainDicomTags" : {
+      "Manufacturer" : "Varian Medical Systems",
+      "Modality" : "RTSTRUCT",
+      "SeriesDescription" : "ARIA RadOnc Structure Sets",
+      "SeriesInstanceUID" : "1.3.6.1.4.1.14519.5.2.1.2193.7172.213354059528434006228837759936",
+      "SeriesNumber" : "26"
+    },
+    "ParentStudy" : "1c379a23-9fd28bba-02b60e5b-850ff34e-4349f09b",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "a69a10d7-068c5263-8aab53fe-de7af5f2-373a74bd",
+    "Instances" : [
+      "01c8deec-542ae8c1-969c3d62-77b12490-59f67a62"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160800",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "CPS",
+      "Modality" : "PT",
+      "NumberOfSlices" : "227",
+      "SeriesDate" : "20040701",
+      "SeriesDescription" : "PET WB",
+      "SeriesInstanceUID" : "1.3.12.2.1107.5.1.4.36085.2.0.517714246252254",
+      "SeriesNumber" : "606",
+      "SeriesTime" : "120000.000000",
+      "SeriesType" : "WHOLE BODY\\IMAGE"
+    },
+    "ParentStudy" : "6b9e19d9-62094390-5f9ddb01-4a191ae7-9766b715",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "ae164c84-e5bd0366-ba937a6d-65414092-f294d6b6",
+    "Instances" : [
+      "00330d0f-911e5e8d-1e305bae-e5c53b73-d2a49298"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160801",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "0.99971222877502\\7.8810308973E-12\\0.02398800104856\\-0.0017278126906\\0.99740260839462\\0.07200747728347",
+      "Manufacturer" : "Philips Medical Systems",
+      "Modality" : "MR",
+      "NumberOfTemporalPositions" : "1",
+      "PerformedProcedureStepDescription" : "IRM cérébrale, neuro-crâne",
+      "ProtocolName" : "T1/SE/extrp CLEAR",
+      "SeriesDate" : "20061201",
+      "SeriesDescription" : "T1/SE/extrp",
+      "SeriesInstanceUID" : "1.3.46.670589.11.0.0.11.4.2.0.8743.5.5396.2006120114333440565",
+      "SeriesNumber" : "601",
+      "SeriesTime" : "143334.390000",
+      "StationName" : "intera"
+    },
+    "ParentStudy" : "27f7126f-4f66fb14-03f4081b-f9341db2-53925988",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "b4b79447-c5c2a0c2-89985adf-9656920f-cb0db5de",
+    "Instances" : [
+      "00874fa6-f3da74b0-147489f4-71427817-a8b502ed"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160800",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "1\\0\\0\\0\\1\\0",
+      "Manufacturer" : "CPS",
+      "Modality" : "PT",
+      "NumberOfSlices" : "227",
+      "SeriesDate" : "20040701",
+      "SeriesDescription" : "PET WB-uncorrected",
+      "SeriesInstanceUID" : "1.3.12.2.1107.5.1.4.36085.2.0.517109821292363",
+      "SeriesNumber" : "605",
+      "SeriesTime" : "120000.000000",
+      "SeriesType" : "WHOLE BODY\\IMAGE"
+    },
+    "ParentStudy" : "6b9e19d9-62094390-5f9ddb01-4a191ae7-9766b715",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "dc0216d2-a406a5ad-31ef7a78-113ae9d9-29939f9e",
+    "Instances" : [
+      "00ffd506-6460663a-cda9bddc-a0090c47-145ba829"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160811",
+    "MainDicomTags" : {
+      "ImageOrientationPatient" : "0.99971222877502\\7.8810308973E-12\\0.02398800104856\\0.02392569556832\\0.07202820479869\\-0.9971156120300",
+      "Manufacturer" : "Philips Medical Systems",
+      "Modality" : "MR",
+      "NumberOfTemporalPositions" : "1",
+      "PerformedProcedureStepDescription" : "IRM cérébrale, neuro-crâne",
+      "ProtocolName" : "T1/3D/FFE/C CLEAR",
+      "SeriesDate" : "20061201",
+      "SeriesDescription" : "T1/3D/FFE/C",
+      "SeriesInstanceUID" : "1.3.46.670589.11.0.0.11.4.2.0.8743.5.5396.2006120114440679623",
+      "SeriesNumber" : "801",
+      "SeriesTime" : "144406.780000",
+      "StationName" : "intera"
+    },
+    "ParentStudy" : "27f7126f-4f66fb14-03f4081b-f9341db2-53925988",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "edbfa0a9-fa2641d7-29514b1c-45881d0b-46c374bd",
+    "Instances" : [
+      "03ce1585-7d9e4c06-98f3cbf4-0e55b138-e9bb4027"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160833",
+    "MainDicomTags" : {
+      "CardiacNumberOfImages" : "0",
+      "ImageOrientationPatient" : "0.999993\\-0.0036927\\0\\-0\\-0\\-1",
+      "ImagesInAcquisition" : "20",
+      "Manufacturer" : "GE MEDICAL SYSTEMS",
+      "Modality" : "MR",
+      "OperatorsName" : "ca",
+      "ProtocolName" : "324-58-2995/8",
+      "SeriesDate" : "20070101",
+      "SeriesDescription" : "Cor FSE T1",
+      "SeriesInstanceUID" : "1.2.840.113619.2.176.2025.1499492.7391.1171285944.396",
+      "SeriesNumber" : "7",
+      "SeriesTime" : "120000.000000",
+      "StationName" : "TWINOW"
+    },
+    "ParentStudy" : "b9c08539-26f93bde-c81ab0d7-bffaf2cb-a4d0bdd0",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  },
+  {
+    "ExpectedNumberOfInstances" : null,
+    "ID" : "f2635388-f01d497a-15f7c06b-ad7dba06-c4c599fe",
+    "Instances" : [
+      "00a99a6f-a5ace144-3e0ef3ae-831374b6-311c1307"
+    ],
+    "IsStable" : true,
+    "Labels" : [],
+    "LastUpdate" : "20231109T160831",
+    "MainDicomTags" : {
+      "CardiacNumberOfImages" : "0",
+      "ImageOrientationPatient" : "0.999841\\0.000366209\\0.0178227\\-0.000427244\\0.999995\\0.00326546",
+      "ImagesInAcquisition" : "24",
+      "Manufacturer" : "GE MEDICAL SYSTEMS",
+      "Modality" : "MR",
+      "OperatorsName" : "ca",
+      "ProtocolName" : "324-58-2995/6",
+      "SeriesDate" : "20070101",
+      "SeriesDescription" : "AX.  FSE PD",
+      "SeriesInstanceUID" : "1.2.840.113619.2.176.2025.1499492.7391.1171285944.394",
+      "SeriesNumber" : "5",
+      "SeriesTime" : "120000.000000",
+      "StationName" : "TWINOW"
+    },
+    "ParentStudy" : "b9c08539-26f93bde-c81ab0d7-bffaf2cb-a4d0bdd0",
+    "Status" : "Unknown",
+    "Type" : "Series"
+  }
+]

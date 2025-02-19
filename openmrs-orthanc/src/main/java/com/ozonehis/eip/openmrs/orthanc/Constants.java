@@ -26,9 +26,9 @@ public class Constants {
 
     public static final String HEADER_STUDIES_SINCE = "orthanc.studies.since";
 
-    public static final String HEADER_OPENMRS_PATIENT_ID = "openmrs.patient.id";
+    public static final String HEADER_OPENMRS_PATIENT_UUID = "openmrs.patient.uuid";
 
-    public static final String HEADER_OPENMRS_OBS_CONCEPT_ID = "openmrs.obs.concept.id";
+    public static final String HEADER_OPENMRS_OBS_CONCEPT_UUID = "openmrs.obs.concept.uuid";
 
     public static final String HEADER_IMAGING_STUDY_ID = "orthanc.imaging.study.id";
 

@@ -23,11 +23,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class OpenmrsObsHandler {
 
-    public List<Attachment> getObsByPatientIDAndConceptID(
+    public List<Attachment> getObsByPatientUUIDAndConceptUUID(
             ProducerTemplate producerTemplate, String patientID, String conceptID) throws JsonProcessingException {
         Map<String, Object> headers = new HashMap<>();
-        headers.put(Constants.HEADER_OPENMRS_PATIENT_ID, patientID);
-        headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_ID, conceptID);
+        headers.put(Constants.HEADER_OPENMRS_PATIENT_UUID, patientID);
+        headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_UUID, conceptID);
         String response = producerTemplate.requestBodyAndHeaders(
                 "direct:orthanc-get-openmrs-obs-route", null, headers, String.class);
         AttachmentObs results = new ObjectMapper().readValue(response, AttachmentObs.class);
