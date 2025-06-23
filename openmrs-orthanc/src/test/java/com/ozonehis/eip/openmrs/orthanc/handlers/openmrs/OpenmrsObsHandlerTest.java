@@ -7,7 +7,7 @@
  */
 package com.ozonehis.eip.openmrs.orthanc.handlers.openmrs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
@@ -16,6 +16,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ozonehis.eip.openmrs.orthanc.Constants;
 import com.ozonehis.eip.openmrs.orthanc.Utils;
+import com.ozonehis.eip.openmrs.orthanc.config.OpenmrsConfig;
 import com.ozonehis.eip.openmrs.orthanc.models.obs.Attachment;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,9 @@ class OpenmrsObsHandlerTest {
     @Mock
     private ProducerTemplate producerTemplate;
 
+    @Mock
+    private OpenmrsConfig openmrsConfig;
+
     @InjectMocks
     private OpenmrsObsHandler openmrsObsHandler;
 
@@ -55,16 +59,22 @@ class OpenmrsObsHandlerTest {
 
     @Test
     void shouldReturnObsByPatientUUIDAndConceptUUID() throws JsonProcessingException {
+        String basicAuthHeader = "Basic dXNlcjpwYXNzd29yZA=="; // Mocked auth header
+
         // Setup
         String responseBody = new Utils().readJSON("response/openmrs-obs-response.json");
         Map<String, Object> headers = new HashMap<>();
         headers.put(Constants.HEADER_OPENMRS_PATIENT_UUID, PATIENT_UUID);
         headers.put(Constants.HEADER_OPENMRS_OBS_CONCEPT_UUID, ATTACHMENT_CONCEPT_UUID);
+        headers.put(Constants.CAMEL_HTTP_METHOD, Constants.GET);
+        headers.put(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON);
+        headers.put(Constants.AUTHORIZATION, basicAuthHeader);
 
         // Mock
         when(producerTemplate.requestBodyAndHeaders(
                         eq("direct:orthanc-get-openmrs-obs-route"), isNull(), eq(headers), eq(String.class)))
                 .thenReturn(responseBody);
+        when(openmrsConfig.authHeader()).thenReturn(basicAuthHeader);
 
         // Act
         List<Attachment> result = openmrsObsHandler.getObsByPatientUUIDAndConceptUUID(
