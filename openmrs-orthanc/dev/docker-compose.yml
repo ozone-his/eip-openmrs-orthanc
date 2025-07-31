@@ -1,0 +1,19 @@
+#
+# Copyright © 2024, Ozone HIS <info@ozone-his.com>
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+version: '3'
+services:
+  eip-client:
+    container_name: ozone-eip-client
+    env_file:
+      - .env
+    image: mekomsolutions/eip-client
+    ports:
+      - "8085:8080"
+    volumes:
+      - ../target/eip-openmrs-orthanc-1.0.0-SNAPSHOT.jar:/eip-client/routes/eip-openmrs-orthanc-1.0.0-SNAPSHOT.jar
