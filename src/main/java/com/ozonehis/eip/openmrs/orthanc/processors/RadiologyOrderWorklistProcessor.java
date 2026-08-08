@@ -10,7 +10,6 @@ package com.ozonehis.eip.openmrs.orthanc.processors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ozonehis.eip.openmrs.orthanc.handlers.orthanc.OrthancWorklistHandler;
-import com.ozonehis.eip.openmrs.orthanc.odoo.OdooPaymentGate;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -34,9 +33,6 @@ public class RadiologyOrderWorklistProcessor implements Processor {
 
     @Autowired
     private OrthancWorklistHandler orthancWorklistHandler;
-
-    @Autowired
-    private OdooPaymentGate odooPaymentGate;
 
     @Value("${openmrs.baseUrl:http://openmrs:8080/openmrs}")
     private String openmrsBaseUrl;
@@ -68,36 +64,10 @@ public class RadiologyOrderWorklistProcessor implements Processor {
 
     private final OkHttpClient httpClient = new OkHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
-    private final Set<String> processedOrders = loadProcessedOrders();
     private Instant lastPollTime = Instant.now().minusSeconds(3600);
-    private static final String PROCESSED_ORDERS_FILE = "/eip-client/.processed-radiology-orders.txt";
 
-    private Set<String> loadProcessedOrders() {
-        Set<String> orders = new HashSet<>();
-        try {
-            java.io.File file = new java.io.File(PROCESSED_ORDERS_FILE);
-            if (file.exists()) {
-                java.util.List<String> lines = java.nio.file.Files.readAllLines(file.toPath());
-                orders.addAll(lines);
-                log.info("Loaded {} processed radiology orders from disk", orders.size());
-            }
-        } catch (Exception e) {
-            log.warn("Could not load processed orders: {}", e.getMessage());
-        }
-        return orders;
-    }
-
-    private void saveProcessedOrders() {
-        try {
-            java.nio.file.Files.write(
-                java.nio.file.Paths.get(PROCESSED_ORDERS_FILE),
-                processedOrders,
-                java.nio.file.StandardOpenOption.CREATE,
-                java.nio.file.StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (Exception e) {
-            log.warn("Could not save processed orders: {}", e.getMessage());
-        }
-    }
+    @Autowired
+    private com.ozonehis.eip.openmrs.orthanc.repository.ProcessedRadiologyOrderRepository processedRadiologyOrderRepository;
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -127,7 +97,7 @@ public class RadiologyOrderWorklistProcessor implements Processor {
                     srId, sr.path("status").asText(), 
                     sr.path("code").path("coding").size(),
                     sr.path("code").path("coding").isArray());
-                if (processedOrders.contains(srId)) { log.info("Already processed {}", srId); continue; }
+                if (processedRadiologyOrderRepository.exists(srId)) { log.info("Already processed {}", srId); continue; }
 
                 // Only process active orders
                 String status = sr.path("status").asText("");
@@ -179,19 +149,22 @@ public class RadiologyOrderWorklistProcessor implements Processor {
                 else if (desc.contains("ultrasound") || desc.contains("echo")) modality = "US";
                 else if (desc.contains("mri") || desc.contains("mr ")) modality = "MR";
 
-                // Check Odoo payment gate - only create worklist if order is confirmed
-                String patientUuidForGate = patientUuid;
-                if (!odooPaymentGate.isOrderConfirmed(patientUuidForGate, procedureDesc)) {
-                    log.info("Odoo order not yet confirmed for patient {} procedure '{}', skipping worklist",
-                        patientUuid, procedureDesc);
+                // Check for a payment-confirmation Task (created by eip-odoo-openmrs's
+                // RadiologyPaymentTaskProcessor once Odoo payment is confirmed) - only
+                // create the worklist entry once one exists with status=completed.
+                // A missing Task means payment isn't confirmed yet; a Task with status
+                // entered-in-error means the payment check itself failed and should
+                // never be treated as a green light - both cases correctly skip here.
+                if (!isPaymentConfirmedViaTask(srId)) {
+                    log.info("No completed payment Task found for ServiceRequest {} (patient {}, procedure '{}'), skipping worklist",
+                        srId, patientUuid, procedureDesc);
                     continue;
                 }
 
                 try {
                     orthancWorklistHandler.createWorklistEntry(
                         patientId, dicomName, accessionNumber, procedureDesc, modality);
-                    processedOrders.add(srId);
-                    saveProcessedOrders();
+                    processedRadiologyOrderRepository.save(srId, accessionNumber);
                     count++;
                 } catch (Exception e) {
                     log.error("Failed to create worklist for order {}: {}", srId, e.getMessage());
@@ -206,6 +179,20 @@ public class RadiologyOrderWorklistProcessor implements Processor {
         } catch (Exception e) {
             log.error("Error polling radiology orders: {}", e.getMessage());
         }
+    }
+
+    private boolean isPaymentConfirmedViaTask(String serviceRequestId) {
+    JsonNode bundle = fetchFhir(openmrsBaseUrl + "/ws/fhir2/R4/Task?based-on=" + serviceRequestId);
+    if (bundle == null) {
+        return false;
+    }
+    for (JsonNode entry : bundle.path("entry")) {
+        JsonNode task = entry.path("resource");
+        if ("accepted".equals(task.path("status").asText(""))) {
+            return true;
+        }
+    }
+        return false;
     }
 
     private JsonNode fetchFhir(String url) {
