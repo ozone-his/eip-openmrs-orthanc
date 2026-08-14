@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ImagingStudyProcessor implements Processor {
     private static final String ORTHANC_RENDERED_IMAGE_ENDPOINT = "%s/instances/%s/rendered";
+    private static final String STRUCTURED_REPORT_MODALITY = "SR";
     @Autowired
     private ProcessedStudyRepository processedStudyRepository;
     @Value("${orthanc.publicUrl:${orthanc.baseUrl}}")
@@ -82,20 +83,7 @@ public class ImagingStudyProcessor implements Processor {
                     log.debug("DiagnosticReport already processed for study {}", study.id);
                     continue;
                 }
-                String modality = null;
                 String studyDate = study.getImagingStudyMainDicomTags().getStudyDate();
-                Series series = null;
-                if (study.getSeries() != null && !study.getSeries().isEmpty()) {
-                    try {
-                        series = orthancImagingStudyHandler.getSeriesByID(
-                                producerTemplate, study.getSeries().get(0));
-                        if (series != null && series.getMainDicomTags() != null) {
-                            modality = series.getMainDicomTags().getModality();
-                        }
-                    } catch (Exception e) {
-                        log.warn("Could not fetch series for study {}: {}", study.id, e.getMessage());
-                    }
-                }
                 String viewerUrl = orthancPublicUrl
                         + "/stone-webviewer/index.html?study=" + studyInstanceUID
                         + "&orthancId=" + study.id;
@@ -109,10 +97,7 @@ public class ImagingStudyProcessor implements Processor {
                 // Upload preview image as attachment
                 try {
                     if (!doesObsExists(producerTemplate, patientUUID, studyInstanceUID)) {
-                        if (series != null && series.getInstances() != null && !series.getInstances().isEmpty()) {
-                            createAttachment(study, patientUUID, series.getInstances().get(0));
-                            log.info("Saved attachment for patient {} study {}", patientUUID, study.id);
-                        }
+                        createAttachment(producerTemplate, study, patientUUID);
                     }
                 } catch (Exception e) {
                     log.warn("Could not save attachment for study {}: {}", study.id, e.getMessage());
@@ -122,16 +107,66 @@ public class ImagingStudyProcessor implements Processor {
             throw new EIPException(String.format("Error processing ImagingStudy: %s", e.getMessage()));
         }
     }
-    private void createAttachment(Study study, String patientUUID, String instanceID) throws IOException {
-        String studyImageUrl = String.format(ORTHANC_RENDERED_IMAGE_ENDPOINT, orthancBaseUrl, instanceID);
-        byte[] orthancStudyBinaryData = orthancImagingStudyHandler.fetchStudyBinaryData(studyImageUrl);
-        if (orthancStudyBinaryData != null) {
-            openmrsAttachmentHandler.saveAttachment(
-                    orthancStudyBinaryData,
-                    patientUUID,
-                    study.getImagingStudyMainDicomTags().getStudyInstanceUID(),
-                    study.id);
+    /**
+     * Attaches the study's first renderable image to the patient's chart.
+     *
+     * <p>A study is not a single image: it holds several series, and this bridge writes its own
+     * Structured Report back into the study as soon as a report exists. Structured Reports carry no
+     * pixel data, so {@code /instances/{id}/rendered} answers 415 for them and
+     * {@link OrthancImagingStudyHandler#fetchStudyBinaryData} returns null. Taking
+     * {@code series[0].instances[0]} blindly therefore attached nothing at all whenever an SR
+     * sorted first - and once the bridge has written one, that is the ordinary case, not an edge
+     * case. Measured on UAT: one XR series and four SR series in the same study, SR first, so the
+     * chart showed a broken thumbnail with no image behind it.
+     *
+     * <p>So walk the series and take the first instance Orthanc will actually render. SR series are
+     * skipped up front to avoid a request that is known to fail; anything else is tried, because
+     * "renders or not" is Orthanc's judgement to make, not a list of modalities kept in here.
+     */
+    private void createAttachment(ProducerTemplate producerTemplate, Study study, String patientUUID)
+            throws IOException {
+        if (study.getSeries() == null || study.getSeries().isEmpty()) {
+            log.warn("Study {} has no series, nothing to attach", study.id);
+            return;
         }
+        for (String seriesID : study.getSeries()) {
+            Series series;
+            try {
+                series = orthancImagingStudyHandler.getSeriesByID(producerTemplate, seriesID);
+            } catch (Exception e) {
+                log.warn("Could not fetch series {} of study {}: {}", seriesID, study.id, e.getMessage());
+                continue;
+            }
+            if (series == null || series.getInstances() == null || series.getInstances().isEmpty()) {
+                continue;
+            }
+            if (series.getMainDicomTags() != null
+                    && STRUCTURED_REPORT_MODALITY.equalsIgnoreCase(series.getMainDicomTags().getModality())) {
+                log.debug("Skipping Structured Report series {} of study {}", seriesID, study.id);
+                continue;
+            }
+            for (String instanceID : series.getInstances()) {
+                String studyImageUrl = String.format(ORTHANC_RENDERED_IMAGE_ENDPOINT, orthancBaseUrl, instanceID);
+                byte[] orthancStudyBinaryData = orthancImagingStudyHandler.fetchStudyBinaryData(studyImageUrl);
+                if (orthancStudyBinaryData != null && orthancStudyBinaryData.length > 0) {
+                    openmrsAttachmentHandler.saveAttachment(
+                            orthancStudyBinaryData,
+                            patientUUID,
+                            study.getImagingStudyMainDicomTags().getStudyInstanceUID(),
+                            study.id);
+                    log.info(
+                            "Saved attachment for patient {} study {} from instance {} ({} bytes)",
+                            patientUUID,
+                            study.id,
+                            instanceID,
+                            orthancStudyBinaryData.length);
+                    return;
+                }
+            }
+        }
+        // Deliberately a warning, not an exception: a study can legitimately be reports only, and
+        // the DiagnosticReport and viewer link above are already saved either way.
+        log.warn("No renderable instance found in study {}, no image attached", study.id);
     }
     private boolean doesObsExists(ProducerTemplate producerTemplate, String patientUUID, String imagingStudyID)
             throws JsonProcessingException {
