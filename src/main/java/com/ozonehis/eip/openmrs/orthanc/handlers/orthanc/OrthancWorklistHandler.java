@@ -39,9 +39,32 @@ public class OrthancWorklistHandler {
     private final OkHttpClient httpClient = new OkHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Creates a worklist entry for an order, unless one already exists for the same accession.
+     *
+     * <p>The caller's own "have I done this?" check is a row in eip_processed_radiology_order, which
+     * makes the database the sole guard against duplicates. Anything that clears or diverges from
+     * that table - a reset, a restore, a fresh deployment onto an existing worklists volume - makes
+     * every order look new again while the .wl files are still sitting there, and each one is
+     * written a second time. Observed on UAT after the table was cleared to re-test the payment
+     * gate: four orders gained a second entry, with today's scheduled date rather than their own.
+     *
+     * <p>That matters at the modality, not just in the database: a duplicated accession number shows
+     * the technician the same study twice with no way to tell which to choose.
+     *
+     * <p>So Orthanc itself is asked first. The repository row stays as the cheap path; this is the
+     * check that actually holds when it is wrong.
+     */
     public String createWorklistEntry(String patientId, String patientName,
                                        String accessionNumber, String procedureDesc,
                                        String modality) throws IOException {
+        String existingId = findWorklistEntryByAccession(accessionNumber);
+        if (existingId != null) {
+            log.info("Worklist entry already exists for accession {} ({}), not creating a duplicate",
+                accessionNumber, existingId);
+            return existingId;
+        }
+
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String now = LocalTime.now().format(DateTimeFormatter.ofPattern("HHmmss"));
 
@@ -87,5 +110,39 @@ public class OrthancWorklistHandler {
                 id, patientId, accessionNumber);
             return id;
         }
+    }
+
+    /**
+     * The id of the existing worklist entry for this accession, or null if there is none.
+     *
+     * <p>A failure to read the list returns null rather than throwing: not being able to check is
+     * not evidence that an entry exists, and refusing to create the entry would turn a transient
+     * Orthanc hiccup into an order that never reaches the modality. The duplicate this guards
+     * against is the lesser harm of the two.
+     */
+    private String findWorklistEntryByAccession(String accessionNumber) {
+        if (accessionNumber == null || accessionNumber.isEmpty()) {
+            return null;
+        }
+        Request request = new Request.Builder()
+            .url(orthancConfig.getOrthancBaseUrl() + "/worklists")
+            .header("token", orthancTokenProvider.getToken())
+            .build();
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                log.warn("Could not list Orthanc worklists ({}), proceeding without a duplicate check",
+                    response.code());
+                return null;
+            }
+            for (com.fasterxml.jackson.databind.JsonNode entry : mapper.readTree(response.body().string())) {
+                if (accessionNumber.equals(entry.path("Tags").path("AccessionNumber").asText(""))) {
+                    return entry.path("ID").asText(null);
+                }
+            }
+        } catch (IOException e) {
+            log.warn("Could not list Orthanc worklists ({}), proceeding without a duplicate check",
+                e.getMessage());
+        }
+        return null;
     }
 }
