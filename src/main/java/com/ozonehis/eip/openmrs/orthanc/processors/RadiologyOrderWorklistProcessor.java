@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.HashSet;
@@ -64,50 +65,73 @@ public class RadiologyOrderWorklistProcessor implements Processor {
 
     private final OkHttpClient httpClient = new OkHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
-    private Instant lastPollTime = Instant.now().minusSeconds(3600);
+
+    /**
+     * How far back each poll looks. A window, deliberately, rather than "since the last poll".
+     *
+     * <p>An order waits here until its payment Task appears, and payment can arrive hours or days
+     * after the order is written. A since-last-poll cursor would show each order exactly once, in
+     * the seconds after it was created and long before anyone has paid, and never look at it again
+     * - the order would wait forever. The window keeps re-examining recent orders until they are
+     * paid, and {@code processedRadiologyOrderRepository} stops the finished ones being redone.
+     *
+     * <p>Seven days is the practical ceiling on order-to-payment at UVL. Raising it costs one
+     * larger FHIR page per poll; lowering it risks stranding an order that is paid late.
+     */
+    private static final int LOOKBACK_DAYS = 7;
 
     @Autowired
     private com.ozonehis.eip.openmrs.orthanc.repository.ProcessedRadiologyOrderRepository processedRadiologyOrderRepository;
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        // Format lastPollTime as FHIR date
         String since = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
             .withZone(ZoneOffset.UTC)
-            .format(lastPollTime);
+            .format(Instant.now().minus(LOOKBACK_DAYS, ChronoUnit.DAYS));
 
         log.debug("Polling for radiology ServiceRequests since {}", since);
 
         try {
-            // Search for active ServiceRequests with imaging category
-            String url = openmrsBaseUrl + "/ws/fhir2/R4/ServiceRequest" +
-                "?_sort=-_lastUpdated&_count=100";
+            // Bounded by _lastUpdated, NOT by _sort.
+            //
+            // This asked for "?_sort=-_lastUpdated&_count=100" and relied on the sort to put new
+            // orders on the first page. OpenMRS's FHIR2 module does not honour _sort: it returns
+            // the first 100 in insertion order, i.e. the OLDEST hundred. Measured on UAT with 830
+            // ServiceRequests, an order placed the same minute was absent from the page, so no
+            // order placed after the first hundred could ever reach the worklist - the automation
+            // was silently dead rather than failing.
+            //
+            // _lastUpdated=gt is honoured, and the same query then returned 3 records including
+            // the new one. It also keeps the page small: 830 records fetched every poll is the
+            // reason this processor logged thousands of lines an hour.
+            String url = openmrsBaseUrl + "/ws/fhir2/R4/ServiceRequest"
+                + "?_lastUpdated=gt" + since + "&_count=100";
 
             JsonNode bundle = fetchFhir(url);
             if (bundle == null) return;
 
-            log.info("Found {} total ServiceRequests in bundle", bundle.path("entry").size());
+            log.debug("Found {} ServiceRequests updated since {}", bundle.path("entry").size(), since);
             int count = 0;
             for (JsonNode entry : bundle.path("entry")) {
                 JsonNode sr = entry.path("resource");
                 String srId = sr.path("id").asText("");
                 String authored = sr.path("authoredOn").asText("");
 
-                log.info("Checking SR id={} status={} code_codings_size={} coding_isArray={}", 
+                log.debug("Checking SR id={} status={} code_codings_size={} coding_isArray={}", 
                     srId, sr.path("status").asText(), 
                     sr.path("code").path("coding").size(),
                     sr.path("code").path("coding").isArray());
-                if (processedRadiologyOrderRepository.exists(srId)) { log.info("Already processed {}", srId); continue; }
+                if (processedRadiologyOrderRepository.exists(srId)) { log.debug("Already processed {}", srId); continue; }
 
                 // Only process active orders
                 String status = sr.path("status").asText("");
-                if (!"active".equals(status)) { log.info("Skipping non-active SR {} status={}", srId, status); continue; }
+                if (!"active".equals(status)) { log.debug("Skipping non-active SR {} status={}", srId, status); continue; }
 
                 // Filter by concept UUID whitelist
                 boolean isRadiology = false;
                 for (JsonNode coding : sr.path("code").path("coding")) {
                     String conceptCode = coding.path("code").asText("");
-                    log.info("SR {} concept code: {}", srId.substring(0,8), conceptCode);
+                    log.debug("SR {} concept code: {}", srId.substring(0,8), conceptCode);
                     if (RADIOLOGY_CONCEPT_UUIDS.contains(conceptCode)) {
                         isRadiology = true;
                         break;
@@ -151,12 +175,12 @@ public class RadiologyOrderWorklistProcessor implements Processor {
 
                 // Check for a payment-confirmation Task (created by eip-odoo-openmrs's
                 // RadiologyPaymentTaskProcessor once Odoo payment is confirmed) - only
-                // create the worklist entry once one exists with status=completed.
+                // create the worklist entry once one exists with status=accepted.
                 // A missing Task means payment isn't confirmed yet; a Task with status
                 // entered-in-error means the payment check itself failed and should
                 // never be treated as a green light - both cases correctly skip here.
                 if (!isPaymentConfirmedViaTask(srId)) {
-                    log.info("No completed payment Task found for ServiceRequest {} (patient {}, procedure '{}'), skipping worklist",
+                    log.debug("No payment Task found for ServiceRequest {} (patient {}, procedure '{}'), skipping worklist",
                         srId, patientUuid, procedureDesc);
                     continue;
                 }
@@ -174,24 +198,62 @@ public class RadiologyOrderWorklistProcessor implements Processor {
             if (count > 0) {
                 log.info("Created {} Orthanc worklist entries from radiology orders", count);
             }
-            lastPollTime = Instant.now();
-
         } catch (Exception e) {
             log.error("Error polling radiology orders: {}", e.getMessage());
         }
     }
 
+    /**
+     * True only if THIS ServiceRequest has an accepted payment Task.
+     *
+     * <p>The basedOn link is checked here, in Java, and not left to the server. OpenMRS's FHIR2
+     * module accepts {@code ?based-on=} and then ignores it: querying with an all-zero uuid returns
+     * every Task in the system. Trusting the server to filter meant that a single accepted Task -
+     * anywhere, for any patient - authorised every radiology order. Measured on UAT: one accepted
+     * Task produced 18 worklist entries for orders that had never been paid, across two patients.
+     * That is a total bypass of the payment gate, not a narrow edge case.
+     *
+     * <p>The query parameter is left in place: it is harmless, and becomes a real optimisation the
+     * day OpenMRS implements it. The filtering below is what actually guarantees correctness.
+     */
     private boolean isPaymentConfirmedViaTask(String serviceRequestId) {
-    JsonNode bundle = fetchFhir(openmrsBaseUrl + "/ws/fhir2/R4/Task?based-on=" + serviceRequestId);
-    if (bundle == null) {
+        JsonNode bundle = fetchFhir(openmrsBaseUrl + "/ws/fhir2/R4/Task?based-on=" + serviceRequestId);
+        if (bundle == null) {
+            return false;
+        }
+        for (JsonNode entry : bundle.path("entry")) {
+            JsonNode task = entry.path("resource");
+            if (!"accepted".equals(task.path("status").asText(""))) {
+                continue;
+            }
+            if (referencesServiceRequest(task, serviceRequestId)) {
+                return true;
+            }
+            log.debug("Ignoring accepted Task {} - it is not based on ServiceRequest {}",
+                task.path("id").asText(""), serviceRequestId);
+        }
         return false;
     }
-    for (JsonNode entry : bundle.path("entry")) {
-        JsonNode task = entry.path("resource");
-        if ("accepted".equals(task.path("status").asText(""))) {
-            return true;
+
+    /**
+     * Whether a Task's basedOn actually points at the given ServiceRequest.
+     *
+     * <p>basedOn is 0..* in FHIR, so it is normally an array, but a server is free to emit a single
+     * object - both shapes are handled rather than assumed. References are compared on the trailing
+     * id so that "ServiceRequest/<uuid>", a bare "<uuid>" and an absolute URL all match.
+     */
+    private boolean referencesServiceRequest(JsonNode task, String serviceRequestId) {
+        JsonNode basedOn = task.path("basedOn");
+        for (JsonNode ref : basedOn.isArray() ? basedOn : java.util.Collections.singletonList(basedOn)) {
+            String reference = ref.path("reference").asText("");
+            if (reference.isEmpty()) {
+                continue;
+            }
+            String id = reference.substring(reference.lastIndexOf('/') + 1);
+            if (serviceRequestId.equals(id)) {
+                return true;
+            }
         }
-    }
         return false;
     }
 
