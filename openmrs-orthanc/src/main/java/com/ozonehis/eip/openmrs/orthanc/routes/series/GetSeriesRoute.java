@@ -36,7 +36,7 @@ public class GetSeriesRoute extends RouteBuilder {
                 .routeId("orthanc-get-series-route")
                 .setHeader(Constants.CAMEL_HTTP_METHOD, constant(Constants.GET))
                 .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
-                .setHeader(Constants.AUTHORIZATION, constant(orthancConfig.authHeader()))
+                .setHeader(Constants.AUTHORIZATION, method(orthancConfig,"authHeader"))
                 .toD(orthancConfig.getOrthancBaseUrl() + GET_SERIES_ENDPOINT + "${header." + Constants.HEADER_SERIES_ID
                         + "}")
                 .end();
