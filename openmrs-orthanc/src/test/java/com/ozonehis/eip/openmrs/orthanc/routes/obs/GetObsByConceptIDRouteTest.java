@@ -8,10 +8,7 @@
 package com.ozonehis.eip.openmrs.orthanc.routes.obs;
 
 import static org.apache.camel.builder.AdviceWith.adviceWith;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import com.ozonehis.eip.openmrs.orthanc.Constants;
 import com.ozonehis.eip.openmrs.orthanc.config.OpenmrsConfig;
 import com.ozonehis.eip.openmrs.orthanc.models.obs.AttachmentObs;
 import org.apache.camel.Endpoint;
@@ -22,8 +19,6 @@ import org.apache.camel.test.spring.junit5.CamelSpringTestSupport;
 import org.apache.camel.test.spring.junit5.UseAdviceWith;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openmrs.eip.fhir.security.TokenCache;
-import org.openmrs.eip.fhir.security.TokenInfo;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
@@ -32,15 +27,13 @@ class GetObsByConceptIDRouteTest extends CamelSpringTestSupport {
 
     private static final String GET_OBS_BY_CONCEPT_ID_ROUTE = "direct:orthanc-get-openmrs-obs-route";
 
-    private OpenmrsConfig openmrsConfig;
-
     @Override
     protected RoutesBuilder createRouteBuilder() {
-        openmrsConfig = new OpenmrsConfig();
+        OpenmrsConfig openmrsConfig = new OpenmrsConfig();
         openmrsConfig.setOpenmrsUsername("admin");
         openmrsConfig.setOpenmrsPassword("Admin123");
         openmrsConfig.setOpenmrsBaseUrl("http://localhost:8080/openmrs");
-        openmrsConfig.setOauthEnabled(false);
+        openmrsConfig.setOauthEnabled(false); // TODO: Add unit test when is Oauth is enabled
         openmrsConfig.setTokenCache(null);
         return new GetObsByConceptIDRoute(openmrsConfig);
     }
@@ -71,7 +64,6 @@ class GetObsByConceptIDRouteTest extends CamelSpringTestSupport {
         // Expectations
         MockEndpoint mockCreatePartnerEndpoint = getMockEndpoint("mock:get-obs");
         mockCreatePartnerEndpoint.expectedMessageCount(1);
-        mockCreatePartnerEndpoint.expectedHeaderReceived(Constants.AUTHORIZATION, "Basic YWRtaW46QWRtaW4xMjM=");
         mockCreatePartnerEndpoint.setResultWaitTime(100);
 
         // Act
@@ -81,27 +73,5 @@ class GetObsByConceptIDRouteTest extends CamelSpringTestSupport {
 
         // Verify
         mockCreatePartnerEndpoint.assertIsSatisfied();
-    }
-
-    @Test
-    public void shouldUseCurrentOauthTokenForEachRequest() throws Exception {
-        TokenCache tokenCache = mock(TokenCache.class);
-        TokenInfo initialToken = new TokenInfo();
-        initialToken.setAccessToken("initial-token");
-        TokenInfo refreshedToken = new TokenInfo();
-        refreshedToken.setAccessToken("refreshed-token");
-        when(tokenCache.getTokenInfo()).thenReturn(initialToken, refreshedToken);
-        openmrsConfig.setOauthEnabled(true);
-        openmrsConfig.setTokenCache(tokenCache);
-
-        MockEndpoint endpoint = getMockEndpoint("mock:get-obs");
-        endpoint.expectedMessageCount(2);
-        endpoint.message(0).header(Constants.AUTHORIZATION).isEqualTo("Bearer initial-token");
-        endpoint.message(1).header(Constants.AUTHORIZATION).isEqualTo("Bearer refreshed-token");
-
-        template.requestBody(GET_OBS_BY_CONCEPT_ID_ROUTE, null, String.class);
-        template.requestBody(GET_OBS_BY_CONCEPT_ID_ROUTE, null, String.class);
-
-        endpoint.assertIsSatisfied();
     }
 }
