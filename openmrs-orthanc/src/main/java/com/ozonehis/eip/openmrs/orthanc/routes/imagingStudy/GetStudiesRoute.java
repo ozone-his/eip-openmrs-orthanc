@@ -37,7 +37,7 @@ public class GetStudiesRoute extends RouteBuilder {
                 .routeId("orthanc-get-studies-route")
                 .setHeader(Constants.CAMEL_HTTP_METHOD, constant(Constants.GET))
                 .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
-                .setHeader(Constants.AUTHORIZATION, constant(orthancConfig.authHeader()))
+                .setHeader(Constants.AUTHORIZATION, method(orthancConfig,"authHeader"))
                 .toD(orthancConfig.getOrthancBaseUrl() + GET_IMAGING_STUDY_ENDPOINT + "${header." + Constants.HEADER_STUDIES_SINCE
                         + "}")
                 .end();

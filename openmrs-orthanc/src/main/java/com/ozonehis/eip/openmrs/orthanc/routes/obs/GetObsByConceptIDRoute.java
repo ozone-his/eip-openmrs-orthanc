@@ -36,7 +36,7 @@ public class GetObsByConceptIDRoute extends RouteBuilder {
                 .routeId("orthanc-get-openmrs-obs-route")
                 .setHeader(Constants.CAMEL_HTTP_METHOD, constant(Constants.GET))
                 .setHeader(Constants.CONTENT_TYPE, constant(Constants.APPLICATION_JSON))
-                .setHeader(Constants.AUTHORIZATION, constant(openmrsConfig.authHeader()))
+                .setHeader(Constants.AUTHORIZATION, method(openmrsConfig, "authHeader"))
                 .toD(openmrsConfig.getOpenmrsBaseUrl() + GET_OBS_ENDPOINT
                         + "${header." + Constants.HEADER_OPENMRS_OBS_CONCEPT_UUID + "}"
                         + "&patient=" + "${header." + Constants.HEADER_OPENMRS_PATIENT_UUID + "}")

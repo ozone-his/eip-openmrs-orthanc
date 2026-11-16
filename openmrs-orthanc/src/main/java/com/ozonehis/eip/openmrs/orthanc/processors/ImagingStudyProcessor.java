@@ -85,7 +85,7 @@ public class ImagingStudyProcessor implements Processor {
                 }
             }
         } catch (Exception e) {
-            throw new EIPException(String.format("Error processing ImagingStudy %s", e.getMessage()));
+            throw new EIPException(String.format("Error processing ImagingStudy %s", e.getMessage()), e);
         }
     }
 
